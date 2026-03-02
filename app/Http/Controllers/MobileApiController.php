@@ -165,7 +165,13 @@ class MobileApiController extends Controller
 
             if ($request->hasFile('attachments')) {
 
-                foreach ($request->file('attachments') as $file) {
+                $files = $request->file('attachments');
+
+                foreach ($files as $file) {
+
+                    if (!$file instanceof \Illuminate\Http\UploadedFile) {
+                        continue;
+                    }
 
                     if (!$file->isValid()) {
                         continue;
