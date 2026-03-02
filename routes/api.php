@@ -39,7 +39,7 @@ Route::prefix('v-mobile')->group(function () {
             
             Route::get('sliders', 'MobileApiController@sliders');
 
-            Route::post('add_blog', 'MobileApiController@add_blog');
+           
             Route::get('blogs', 'MobileApiController@blogs');
             
         });

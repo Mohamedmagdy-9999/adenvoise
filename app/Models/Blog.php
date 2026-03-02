@@ -15,7 +15,7 @@ class Blog extends Model
 
     public function getFileUrlAttribute()
     {
-        return asset('blog/' . $this->file);
+        return asset('blog/' . $this->image);
     }
 
     public function getTitleAttribute()
@@ -38,7 +38,7 @@ class Blog extends Model
             : $this->desc_en;
     }
 
-    
+
     public function category()
     {
         return $this->belongsTo(Category::class , 'category_id');

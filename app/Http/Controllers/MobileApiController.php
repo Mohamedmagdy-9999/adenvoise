@@ -258,32 +258,6 @@ class MobileApiController extends Controller
     }
 
 
-    public function add_blog(Request $request)
-    {
-        $image = null;
-        if ($file = $request->file('image')) {
-            $image = time() . $file->getClientOriginalName();
-            $file->move('blog', $image);
-        }
-        $data = new Blog();
-        $data->image = $image;
-        $data->category_id = $request->category_id;
-        $data->title_ar = $request->title_ar;
-        $data->title_en = $request->title_en;
-        $data->desc_en = $request->desc_en;
-        $data->desc_ar = $request->desc_ar;
-        $data->save();
-       
-        return response()->json([
-                'status' => true,
-                'message' => "تم الاضافة بنجاح",
-              
-        ]);
-       
-    }
-
-
-
     public function blogs()
     {
         $data = Blog::latest()->paginate(8);
