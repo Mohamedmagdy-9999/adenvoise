@@ -36,8 +36,11 @@ Route::prefix('v-mobile')->group(function () {
             Route::post('add_complaint', 'MobileApiController@add_complaint');
             Route::get('my_complaints', 'MobileApiController@my_complaints');
             
-            Route::post('add_slider', 'MobileApiController@add_slider');
+            
             Route::get('sliders', 'MobileApiController@sliders');
+
+            Route::post('add_blog', 'MobileApiController@add_blog');
+            Route::get('blogs', 'MobileApiController@blogs');
             
         });
 
