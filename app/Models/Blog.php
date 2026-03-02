@@ -13,7 +13,7 @@ class Blog extends Model
 
     protected $appends = ['image_url','title','category_name','desc'];
 
-    public function getFileUrlAttribute()
+    public function getImageUrlAttribute()
     {
         return asset('blog/' . $this->image);
     }
