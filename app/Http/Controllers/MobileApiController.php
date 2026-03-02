@@ -94,6 +94,7 @@ class MobileApiController extends Controller
 
     }
 
+    
     public function add_complaint(Request $request)
     {
         $messages = [
@@ -238,23 +239,7 @@ class MobileApiController extends Controller
         ]);
     }
 
-    public function add_slider(Request $request)
-    {
-        $image = null;
-        if ($file = $request->file('image')) {
-            $image = time() . $file->getClientOriginalName();
-            $file->move('slider', $image);
-        }
-        $data = new Slider();
-        $data->image = $image;
-        $data->save();
-       
-        return response()->json([
-                'status' => true,
-                'message' => "تم الاضافة بنجاح",
-              
-        ]);
-    }
+   
     
     public function sliders()
     {
