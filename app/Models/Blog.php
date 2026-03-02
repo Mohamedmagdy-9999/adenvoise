@@ -27,6 +27,8 @@ class Blog extends Model
             : $this->title_en;
     }
 
+
+
     public function getDescAttribute()
     {
         $locale = app()->getLocale();
@@ -36,6 +38,7 @@ class Blog extends Model
             : $this->desc_en;
     }
 
+    
     public function category()
     {
         return $this->belongsTo(Category::class , 'category_id');
