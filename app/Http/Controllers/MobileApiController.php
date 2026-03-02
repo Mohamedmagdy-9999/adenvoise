@@ -25,6 +25,7 @@ use App\Models\ComplaintType;
 use App\Models\Complaint;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Slider;
+use App\Models\Blog;
 class MobileApiController extends Controller
 {
 
@@ -304,6 +305,6 @@ class MobileApiController extends Controller
         ]);
     }
 
-    
+
 
 }
