@@ -163,11 +163,11 @@ class MobileApiController extends Controller
                 'complaint_status_id' => 1,
             ]);
 
-            if ($request->file('attachments')) {
+            if ($request->hasFile('attachments')) {
 
                 foreach ($request->file('attachments') as $file) {
 
-                    if (!$file || !$file->isValid()) {
+                    if (!$file->isValid()) {
                         continue;
                     }
 
