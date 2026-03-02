@@ -281,6 +281,8 @@ class MobileApiController extends Controller
        
     }
 
+    
+
     public function blogs()
     {
         $data = Blog::latest()->paginate(8);
