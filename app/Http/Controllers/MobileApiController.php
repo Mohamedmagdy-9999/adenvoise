@@ -281,7 +281,7 @@ class MobileApiController extends Controller
        
     }
 
-    
+
 
     public function blogs()
     {
@@ -303,5 +303,7 @@ class MobileApiController extends Controller
               
         ]);
     }
+
+    
 
 }
