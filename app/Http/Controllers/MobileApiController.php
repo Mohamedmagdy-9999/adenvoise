@@ -232,7 +232,8 @@ class MobileApiController extends Controller
                'attachments'        => $complaint->attachments->map(function($attachment){
                                         return [
                                             'id' => $attachment->id,
-                                            'file_url' => $attachment->file_url
+                                            'file_url' => $attachment->file_url,
+                                            'type' => $attachment->type,
                                         ];
                                     }),
            
