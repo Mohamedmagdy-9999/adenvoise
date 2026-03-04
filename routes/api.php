@@ -63,10 +63,10 @@ Route::prefix('v-admin')->group(function () {
             Route::get('levels','AdminApiController@levels');
             Route::get('categories','AdminApiController@categories');
 
-            Route::get('sliders', 'MobileApiController@sliders');
-            Route::post('add_slider', 'MobileApiController@add_slider');
-            Route::post('update_slider/{id}', 'MobileApiController@update_slider');
-            Route::delete('delete_slider/{id}', 'MobileApiController@delete_slider');
+            Route::get('sliders', 'AdminApiController@sliders');
+            Route::post('add_slider', 'AdminApiController@add_slider');
+            Route::post('update_slider/{id}', 'AdminApiController@update_slider');
+            Route::delete('delete_slider/{id}', 'AdminApiController@delete_slider');
 
             Route::get('blogs', 'AdminApiController@blogs');
             
