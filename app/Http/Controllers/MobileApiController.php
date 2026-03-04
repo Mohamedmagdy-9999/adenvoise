@@ -208,7 +208,7 @@ class MobileApiController extends Controller
 
     public function my_complaints()
     {
-        $data = Complaint::where('citizen_id',auth('api_citizens')->id())->latest()->paginate(8);
+        $data = Complaint::with('attachments')->where('citizen_id',auth('api_citizens')->id())->latest()->paginate(8);
         $data->getCollection()->transform(function ($data) {
              return [
                 'id'  => $data->id,
@@ -229,7 +229,7 @@ class MobileApiController extends Controller
                'desc'=> $data->desc,
                'status_name'=> $data->status_name,
                'status_id'=> $data->complaint_status_id,
-               'attachments'        => $complaint->attachments->map(function($attachment){
+               'attachments'        => $data->attachments->map(function($attachment){
                                         return [
                                             'id' => $attachment->id,
                                             'file_url' => $attachment->file_url,
