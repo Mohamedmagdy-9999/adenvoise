@@ -11,4 +11,20 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Admin extends Authenticatable implements JWTSubject
 {
     use HasFactory;
+
+     public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    // ✅ مطلوب من JWT
+    public function getJWTCustomClaims()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+
+        ];
+    }
 }
