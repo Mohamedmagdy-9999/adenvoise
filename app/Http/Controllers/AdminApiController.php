@@ -483,7 +483,7 @@ public function directorates()
                 'directorate_id'=> $data->directorate_id,
                 'neighborhood_name'=> $data->neighborhood_name,
                 'neighborhood_id'=> $data->neighborhood_id,
-                'complaint_count' => $item->complaints_count,
+                'complaint_count' => $data->complaints_count,
 
             ];
         });
