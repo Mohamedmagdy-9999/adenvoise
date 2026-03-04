@@ -309,7 +309,7 @@ class AuthApiController extends Controller
         }
 
         $messages = [
-            'phone.numeric' => 'رقم الهاتف يجب أن يكون أرقام فقط',
+          
             'name.max' => 'الاسم طويل جدًا',
             'email.email' => 'صيغة البريد الإلكتروني غير صحيحة',
             'email.unique' => 'البريد الإلكتروني مستخدم من قبل',
@@ -318,7 +318,7 @@ class AuthApiController extends Controller
 
         $data = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'phone' => 'sometimes|numeric',
+           
             'email' => 'sometimes|email|unique:admins,email,' . $user->id,
             'password' => 'nullable|string|min:8',
         ], $messages);
