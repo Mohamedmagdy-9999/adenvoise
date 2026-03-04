@@ -302,6 +302,149 @@ public function directorates()
     }
 
 
+
+
+    public function add_blog(Request $request)
+    {
+        $messages = [
+            'required' => 'حقل :attribute مطلوب.',
+            'image' => 'حقل :attribute يجب أن يكون صورة.',
+            'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+            'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+            'exists' => 'القسم غير موجود.',
+        ];
+
+        $attributes = [
+            'image' => 'الصورة',
+            'title_ar' => 'عنوان المقال العربي',
+            'title_en' => 'عنوان المقال الانجليزي',
+            'desc_ar' => 'وصف المقال العربي',
+            'desc_en' => 'وصف المقال الانجليزي',
+            'category_id' => 'القسم',
+        ];
+
+        $request->validate([
+            'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'category_id' => 'required|exists:categories,id',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'desc_ar' => 'required',
+            'desc_en' => 'required',
+        ], $messages, $attributes);
+
+        
+        $name = null;
+        if ($file = $request->file('image')) {
+            $name = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('blog'), $name);
+        }
+
+        
+        $blog = new Blog();
+        $blog->image = $name;
+        $blog->category_id = $request->category_id;
+        $blog->title_ar = $request->title_ar;
+        $blog->title_en = $request->title_en;
+        $blog->desc_ar = $request->desc_ar;
+        $blog->desc_en = $request->desc_en;
+        $blog->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الاضافة بنجاح',
+        ], 200);
+    }
+
+    public function update_blog(Request $request, $id)
+    {
+        $messages = [
+            'image' => 'حقل :attribute يجب أن يكون صورة.',
+            'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+            'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+            'exists' => 'القسم غير موجود.',
+        ];
+
+        $attributes = [
+            'image' => 'الصورة',
+            'title_ar' => 'عنوان المقال العربي',
+            'title_en' => 'عنوان المقال الانجليزي',
+            'desc_ar' => 'وصف المقال العربي',
+            'desc_en' => 'وصف المقال الانجليزي',
+            'category_id' => 'القسم',
+        ];
+
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'category_id' => 'required|exists:categories,id',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'desc_ar' => 'required',
+            'desc_en' => 'required',
+        ], $messages, $attributes);
+
+        
+        $blog = Blog::find($id);
+
+        if (!$blog) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المقال غير موجود'
+            ], 404);
+        }
+
+       
+        if ($request->hasFile('image')) {
+
+            
+            if ($blog->image && File::exists(public_path('blog/' . $blog->image))) {
+                File::delete(public_path('blog/' . $blog->image));
+            }
+
+            $file = $request->file('image');
+            $name = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('blog'), $name);
+
+            $blog->image = $name;
+        }
+
+        $blog->category_id = $request->category_id;
+        $blog->title_ar = $request->title_ar;
+        $blog->title_en = $request->title_en;
+        $blog->desc_ar = $request->desc_ar;
+        $blog->desc_en = $request->desc_en;
+        $blog->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم التحديث بنجاح'
+        ]);
+    }
+
+    public function delete_blog($id)
+    {
+        $blog = Blog::find($id);
+
+        if (!$blog) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المقال غير موجود'
+            ], 404);
+        }
+
+        // حذف الصورة
+        if ($blog->image && File::exists(public_path('blog/' . $blog->image))) {
+            File::delete(public_path('blog/' . $blog->image));
+        }
+
+        // حذف من الداتابيز
+        $blog->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الحذف بنجاح'
+        ]);
+    }
+
     public function blogs()
     {
         $data = Blog::latest()->paginate(8);

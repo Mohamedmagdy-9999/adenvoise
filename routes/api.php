@@ -68,6 +68,10 @@ Route::prefix('v-admin')->group(function () {
             Route::post('update_slider/{id}', 'AdminApiController@update_slider');
             Route::delete('delete_slider/{id}', 'AdminApiController@delete_slider');
 
+
+            Route::post('add_blog', 'AdminApiController@add_blog');
+            Route::post('update_blog/{id}', 'AdminApiController@update_blog');
+            Route::delete('delete_blog/{id}', 'AdminApiController@delete_blog');
             Route::get('blogs', 'AdminApiController@blogs');
             
         });
