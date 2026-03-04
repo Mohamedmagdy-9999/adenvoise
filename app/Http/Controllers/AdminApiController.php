@@ -469,4 +469,29 @@ public function directorates()
     }
 
 
+    public function citizens()
+    {
+        $data = Citizen::withCount('complaints')->latest()->paginate(8);
+        $data->getCollection()->transform(function ($data) {
+            return [
+                'id'  => $data->id,
+                'name'=> $data->name,
+                'email'=> $data->email,
+                'identity_number'=> $data->identity_number,
+                'phone'=> $data->phone,
+                'directorate_name'=> $data->directorate_name,
+                'directorate_id'=> $data->directorate_id,
+                'neighborhood_name'=> $data->neighborhood_name,
+                'neighborhood_id'=> $data->neighborhood_id,
+                'complaint_count' => $item->complaints_count,
+
+            ];
+        });
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+    }
+
 }

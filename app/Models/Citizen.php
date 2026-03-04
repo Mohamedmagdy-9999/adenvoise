@@ -70,4 +70,9 @@ class Citizen extends Authenticatable implements JWTSubject
     {
         return $this->neighborhood ? $this->neighborhood->name_ar : null;
     }
+
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class,'citizen_id');
+    }
 }
