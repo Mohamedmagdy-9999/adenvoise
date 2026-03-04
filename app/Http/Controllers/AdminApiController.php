@@ -451,11 +451,13 @@ public function directorates()
         $data->getCollection()->transform(function ($data) {
              return [
                 'id'  => $data->id,
-                'title'=> $data->title,
-                'desc'=> $data->desc,
+                'title_ar'=> $data->title_ar,
+                'title_en'=> $data->title_en,
+                'desc_ar'=> $data->desc_ar,
+                'desc_en'=> $data->desc_en,
                 'image_url'=> $data->image_url,
                 'category_name'=> $data->category_name,
-
+                'category_id'=> $data->category_id,
 
             ];
         });
