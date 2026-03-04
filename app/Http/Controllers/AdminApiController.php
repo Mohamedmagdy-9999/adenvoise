@@ -26,6 +26,7 @@ use App\Models\Complaint;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Slider;
 use App\Models\Blog;
+use Illuminate\Support\Facades\File;
 class AdminApiController extends Controller
 {
 
@@ -165,6 +166,126 @@ public function directorates()
         ]);
     }
 
+    public function add_slider(Request $request)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+                'image' => 'حقل :attribute يجب أن يكون صورة.',
+                'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+               
+                'after' => 'حقل :attribute يجب أن يكون بعد تاريخ البداية.',
+                'numeric' => 'حقل :attribute يجب أن يكون رقم.',
+                // 🔥 رسائل الـ between المخصصة
+                'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+               
+            ];
+            
+            $attributes = [
+                'image' => 'الصورة',
+              
+            ];
+            
+            $request->validate([
+            
+                'image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+              
+            ], $messages, $attributes);
+
+            
+            $name = null;
+            if ($file = $request->file('image')) {
+                $name = time() . $file->getClientOriginalName();
+                $file->move('slider', $name);
+            }
+
+            $slider = new Slider();
+            $slider->image =$name;
+            $slider->save();
+
+            return response()->json([
+                'message' => 'تم الاضافة',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function update_slider(Request $request, $id)
+    {
+        $messages = [
+            'required' => 'حقل :attribute مطلوب.',
+            'image' => 'حقل :attribute يجب أن يكون صورة.',
+            'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+            'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+        ];
+
+        $attributes = [
+            'image' => 'الصورة',
+        ];
+
+        // ✅ الصورة اختيارية في التحديث
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ], $messages, $attributes);
+
+        // 🔥 التأكد من وجود السجل
+        $slider = Slider::find($id);
+
+        if (!$slider) {
+            return response()->json([
+                'status' => false,
+                'message' => 'السلايدر غير موجود'
+            ], 404);
+        }
+
+        // ✅ لو في صورة جديدة
+        if ($request->hasFile('image')) {
+
+            // 🧹 حذف القديمة لو موجودة
+            if ($slider->image && File::exists(public_path('slider/' . $slider->image))) {
+                File::delete(public_path('slider/' . $slider->image));
+            }
+
+            $file = $request->file('image');
+            $name = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('slider'), $name);
+
+            $slider->image = $name;
+        }
+
+        $slider->save();
+
+        return response()->json([
+            'message' => 'تم التحديث بنجاح',
+            'status' => true,
+        ], 200);
+    }
+
+    public function delete_slider($id)
+    {
+        $slider = Slider::find($id);
+
+        // ❌ لو مش موجود
+        if (!$slider) {
+            return response()->json([
+                'status' => false,
+                'message' => 'السلايدر غير موجود'
+            ], 404);
+        }
+
+        // 🧹 حذف الصورة من السيرفر
+        if ($slider->image && File::exists(public_path('slider/' . $slider->image))) {
+            File::delete(public_path('slider/' . $slider->image));
+        }
+
+        // 🗑️ حذف من الداتابيز
+        $slider->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الحذف بنجاح'
+        ], 200);
+    }
+
     public function sliders()
     {
         $data = Slider::latest()->get()->map(function ($slider) {
@@ -180,7 +301,7 @@ public function directorates()
         ]);
     }
 
-    
+
     public function blogs()
     {
         $data = Blog::latest()->paginate(8);

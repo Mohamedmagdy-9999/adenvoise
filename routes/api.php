@@ -56,7 +56,7 @@ Route::prefix('v-admin')->group(function () {
 
             Route::post('update_admin_profile', 'AuthApiController@update_admin_profile');
             Route::get('complaints', 'AdminApiController@complaints');
-            
+
             Route::get('directorates','AdminApiController@directorates');
             Route::get('neighborhoods/{id}','AdminApiController@neighborhood');
             Route::get('types','AdminApiController@types');
@@ -64,7 +64,9 @@ Route::prefix('v-admin')->group(function () {
             Route::get('categories','AdminApiController@categories');
 
             Route::get('sliders', 'MobileApiController@sliders');
-
+            Route::post('add_slider', 'MobileApiController@add_slider');
+            Route::post('update_slider/{id}', 'MobileApiController@update_slider');
+            Route::delete('delete_slider/{id}', 'MobileApiController@delete_slider');
 
             Route::get('blogs', 'AdminApiController@blogs');
             
