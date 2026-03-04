@@ -75,6 +75,7 @@ Route::prefix('v-admin')->group(function () {
             Route::get('blogs', 'AdminApiController@blogs');
 
             Route::get('citizens', 'AdminApiController@citizens');
+            Route::get('citizen_complaints/{id}', 'AdminApiController@citizen_complaints');
             
         });
 
