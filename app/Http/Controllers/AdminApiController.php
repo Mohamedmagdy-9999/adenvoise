@@ -29,6 +29,72 @@ use App\Models\Blog;
 class AdminApiController extends Controller
 {
 
+public function directorates()
+    {
+        $data = Directorate::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function neighborhood($id)
+    {
+        $data = Neighborhood::where('directorate_id',$id)->latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+    }
+
+    public function types()
+    {
+        $data = Type::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+
+    public function levels()
+    {
+        $data = SpeelLevel::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function categories()
+    {
+        $data = Category::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function complaint_types()
+    {
+        $data = ComplaintType::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
     public function complaints(Request $request)
     {
         $data = Complaint::with('attachments')
@@ -96,6 +162,43 @@ class AdminApiController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data,
+        ]);
+    }
+
+    public function sliders()
+    {
+        $data = Slider::latest()->get()->map(function ($slider) {
+            return [
+                'id'    => $slider->id,
+                'image' => $slider->image_url,
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data,
+        ]);
+    }
+
+    
+    public function blogs()
+    {
+        $data = Blog::latest()->paginate(8);
+        $data->getCollection()->transform(function ($data) {
+             return [
+                'id'  => $data->id,
+                'title'=> $data->title,
+                'desc'=> $data->desc,
+                'image_url'=> $data->image_url,
+                'category_name'=> $data->category_name,
+
+
+            ];
+        });
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
         ]);
     }
 
