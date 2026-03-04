@@ -222,7 +222,7 @@ class AuthApiController extends Controller
                     'message' => 'التوكن غير صالح أو انتهى'
                 ], 401);
             }
-ذ
+
             return response()->json([
                 'status' => true,
                 'user' => $user

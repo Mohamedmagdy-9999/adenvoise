@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
          'detect.jwt' => \App\Http\Middleware\DetectJwtGuard::class,
          'citizen' => \App\Http\Middleware\EnsureCitizen::class,
+         'admin' => \App\Http\Middleware\EnsureAdmin::class,
     ];
 }

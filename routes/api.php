@@ -46,3 +46,17 @@ Route::prefix('v-mobile')->group(function () {
 
 });
 
+
+
+Route::prefix('v-admin')->group(function () {
+    
+   
+    Route::post('admin_login', 'AuthApiController@admin_login');
+        Route::middleware(['auth:api_admins', 'admin'])->group(function () {
+
+            Route::post('update_admin_profile', 'AuthApiController@update_admin_profile');
+       
+            
+        });
+
+});
