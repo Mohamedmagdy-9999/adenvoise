@@ -458,6 +458,7 @@ public function directorates()
                 'image_url'=> $data->image_url,
                 'category_name'=> $data->category_name,
                 'category_id'=> $data->category_id,
+                'created_at' => optional($data->created_at)->format('d-m-Y'),
 
             ];
         });
