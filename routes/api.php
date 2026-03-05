@@ -56,6 +56,7 @@ Route::prefix('v-admin')->group(function () {
 
             Route::post('update_admin_profile', 'AuthApiController@update_admin_profile');
             Route::get('complaints', 'AdminApiController@complaints');
+            Route::post('update_complaint_status/{id}', 'AdminApiController@update_complaint_status');
 
             Route::get('directorates','AdminApiController@directorates');
             Route::get('neighborhoods/{id}','AdminApiController@neighborhood');
