@@ -455,20 +455,38 @@ public function directorates()
         ]);
     }
 
-    public function blogs()
+    public function blogs(Request $request)
     {
-        $data = Blog::latest()->paginate(8);
-        $data->getCollection()->transform(function ($data) {
+        $data = Blog::query()
+            
+
+            ->when($request->category_id, fn ($q, $v) =>
+                $q->where('category_id', $v))
+
+            ->when($request->from, fn ($q, $v) =>
+                $q->whereDate('created_at', '>=', $v))
+
+            ->when($request->to, fn ($q, $v) =>
+                $q->whereDate('created_at', '<=', $v))
+
+           
+            
+            ->latest()
+
+            ->paginate(20);
+
+      
+        $data->getCollection()->transform(function ($item) {
              return [
-                'id'  => $data->id,
-                'title_ar'=> $data->title_ar,
-                'title_en'=> $data->title_en,
-                'desc_ar'=> $data->desc_ar,
-                'desc_en'=> $data->desc_en,
-                'image_url'=> $data->image_url,
-                'category_name'=> $data->category_name,
-                'category_id'=> $data->category_id,
-                'created_at' => optional($data->created_at)->format('d-m-Y'),
+                'id'  => $item->id,
+                'title_ar'=> $item->title_ar,
+                'title_en'=> $item->title_en,
+                'desc_ar'=> $item->desc_ar,
+                'desc_en'=> $item->desc_en,
+                'image_url'=> $item->image_url,
+                'category_name'=> $item->category_name,
+                'category_id'=> $item->category_id,
+                'created_at' => optional($item->created_at)->format('d-m-Y'),
 
             ];
         });
