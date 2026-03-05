@@ -166,6 +166,19 @@ public function directorates()
         ]);
     }
 
+    public function update_complaint_status(Request $request,$id)
+    {
+        $data = Complaint::findOrFail($id);
+        $data->status_id = $request->status_id;
+        $data->save();
+          
+       
+        return response()->json([
+            'status' => true,
+            'message' => "تم تعديل الحالة",
+        ]);
+    }
+
     public function add_slider(Request $request)
     {
         $messages = [
@@ -300,9 +313,6 @@ public function directorates()
             'data'   => $data,
         ]);
     }
-
-
-
 
     public function add_blog(Request $request)
     {
