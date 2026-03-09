@@ -15,4 +15,6 @@ class ComplaintMessage extends Model
     {
         return $this->belongsTo(Complaint::class,'complaint_id');
     }
+
+    
 }

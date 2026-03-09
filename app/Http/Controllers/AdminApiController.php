@@ -626,7 +626,7 @@ class AdminApiController extends Controller
        
 
         $name = null;
-        if ($file = $request->file('image')) {
+        if ($file = $request->file('attachment')) {
              $name = time() . $file->getClientOriginalName();
             $file->move('messages', $name);
         }
@@ -635,6 +635,7 @@ class AdminApiController extends Controller
             'complaint_id'=>$request->complaint_id,
             'sender_type'=>'admin',
             'sender_id'=>auth('api_admins')->id(),
+            'sender_name'=>auth('api_admins')->name(),
             'message'=>$request->message,
             'attachment'=>$name
         ]);
