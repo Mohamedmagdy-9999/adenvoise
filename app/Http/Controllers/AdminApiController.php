@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Slider;
 use App\Models\Blog;
 use Illuminate\Support\Facades\File;
+use App\Models\ComplaintMessage;
 class AdminApiController extends Controller
 {
 
