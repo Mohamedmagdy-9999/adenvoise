@@ -171,7 +171,7 @@ class MobileApiController extends Controller
                         continue;
                     }
 
-                    $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+                    $filename = time() . '_' . $file->getClientOriginalName();
 
                     $file->move(public_path('complaints'), $filename);
 
