@@ -169,36 +169,34 @@ class AdminApiController extends Controller
 
     public function complaint_details(Request $request,$id)
     {
-        $data = Complaint::with('attachments')->findOrFail($id);
-          
-        $data->getCollection()->transform(function ($item) {
-            return [
-                'id' => $item->id,
-                'complaint_type_name' => $item->complaint_type_name,
-                'type_name' => $item->type_name,
-                'level_name' => $item->level_name,
-                'directorate_name' => $item->directorate_name,
-                'neighborhood_name' => $item->neighborhood_name,
-                'entity_name' => $item->entity_name,
-                'lat' => $item->lat,
-                'lang' => $item->lang,
-                'address' => $item->address,
-                'title' => $item->title,
-                'desc' => $item->desc,
-                'status_name' => $item->status_name,
-                'status_id' => $item->complaint_status_id,
-                'citizen_name' => $item->citizen_name,
-                'created_at' => optional($item->created_at)->format('d-m-Y'),
+        $item = Complaint::with('attachments')->findOrFail($id);
 
-                 'attachments' => $item->attachments->map(function ($attachment) {
-                     return [
-                         'id' => $attachment->id,
-                         'file_url' => $attachment->file_url,
-                         'type' => $attachment->type,
-                     ];
-                 })->values(),
-            ];
-        });
+        $data = [
+            'id' => $item->id,
+            'complaint_type_name' => $item->complaint_type_name,
+            'type_name' => $item->type_name,
+            'level_name' => $item->level_name,
+            'directorate_name' => $item->directorate_name,
+            'neighborhood_name' => $item->neighborhood_name,
+            'entity_name' => $item->entity_name,
+            'lat' => $item->lat,
+            'lang' => $item->lang,
+            'address' => $item->address,
+            'title' => $item->title,
+            'desc' => $item->desc,
+            'status_name' => $item->status_name,
+            'status_id' => $item->complaint_status_id,
+            'citizen_name' => $item->citizen_name,
+            'created_at' => optional($item->created_at)->format('d-m-Y'),
+
+            'attachments' => $item->attachments->map(function ($attachment) {
+                return [
+                    'id' => $attachment->id,
+                    'file_url' => $attachment->file_url,
+                    'type' => $attachment->type,
+                ];
+            })->values(),
+        ];
 
         return response()->json([
             'status' => true,
