@@ -630,12 +630,12 @@ class AdminApiController extends Controller
              $name = time() . $file->getClientOriginalName();
             $file->move('messages', $name);
         }
-
+        $admin = auth('api_admins')->user();
         ComplaintMessage::create([
             'complaint_id'=>$request->complaint_id,
             'sender_type'=>'admin',
-            'sender_id'=>auth('api_admins')->id(),
-            'sender_name'=>auth('api_admins')->name(),
+            'sender_id'    => $admin->id,
+            'sender_name'  => $admin->name,
             'message'=>$request->message,
             'attachment'=>$name
         ]);
