@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\File;
 class AdminApiController extends Controller
 {
 
-public function directorates()
+    public function directorates()
     {
         $data = Directorate::latest()->get();
         return response()->json([
