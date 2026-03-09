@@ -9,7 +9,7 @@ class Complaint extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $appends = ['complaint_type_name','type_name','level_name','directorate_name','neighborhood_name','entity_name','status_name','citizen_name'];
+    protected $appends = ['complaint_type_name','type_name','level_name','directorate_name','neighborhood_name','entity_name','status_name','citizen_name','citizen_image_url'];
 
     public function attachments()
     {
@@ -95,6 +95,11 @@ class Complaint extends Model
     public function getCitizenNameAttribute()
     {
          return $this->citizen ? $this->citizen->name : null;
+    }
+
+    public function getCitizenImageUrlAttribute()
+    {
+         return $this->citizen ? $this->citizen->image_url : null;
     }
     
     public function messages()

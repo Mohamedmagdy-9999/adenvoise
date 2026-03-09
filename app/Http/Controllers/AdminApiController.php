@@ -170,7 +170,18 @@ class AdminApiController extends Controller
 
     public function complaint_details(Request $request,$id)
     {
-        $item = Complaint::with('attachments')->findOrFail($id);
+        $item = Complaint::with([
+            'attachments',
+            'complaint_type',
+            'type',
+            'level',
+            'directorate',
+            'neighborhood',
+            'entity',
+            'status',
+            'citizen'
+        ])->withCount('messages')
+        ->findOrFail($id);
 
         $data = [
             'id' => $item->id,
@@ -188,6 +199,8 @@ class AdminApiController extends Controller
             'status_name' => $item->status_name,
             'status_id' => $item->complaint_status_id,
             'citizen_name' => $item->citizen_name,
+            'citizen_image_url' => $item->citizen_image_url,
+            'complaint_count' => $item->complaints_count,
             'created_at' => optional($item->created_at)->format('d-m-Y'),
 
             'attachments' => $item->attachments->map(function ($attachment) {
