@@ -61,6 +61,7 @@ Route::prefix('v-admin')->group(function () {
             
             Route::get('complaint_messages/{id}', 'AdminApiController@complaint_messages');
             Route::post('admin_send_message', 'AdminApiController@admin_send_message');
+            
 
             Route::get('directorates','AdminApiController@directorates');
             Route::get('neighborhoods/{id}','AdminApiController@neighborhood');

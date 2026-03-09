@@ -619,7 +619,7 @@ class AdminApiController extends Controller
         $request->validate([
             'complaint_id'=>'required|exists:complaints,id',
             'message'=>'nullable|string',
-            'attachment'=>'nullable|file|max:20480';
+            'attachment'=>'nullable|file|max:20480',
         ], $messages, $attributes);
 
        
