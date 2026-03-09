@@ -602,11 +602,27 @@ class AdminApiController extends Controller
 
     public function admin_send_message(Request $request)
     {
+
+     $messages = [
+            'image' => 'حقل :attribute يجب أن يكون صورة.',
+            'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+            'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+            'exists' => 'القسم غير موجود.',
+        ];
+
+        $attributes = [
+            'message' => 'الرسالة',
+            'attachment' => 'الملف',
+            'complaint_id' => 'الشكوي',
+        ];
+
         $request->validate([
             'complaint_id'=>'required|exists:complaints,id',
             'message'=>'nullable|string',
-            'attachment'=>'nullable|file|max:20480'
-        ]);
+            'attachment'=>'nullable|file|max:20480';
+        ], $messages, $attributes);
+
+       
 
         $name = null;
         if ($file = $request->file('image')) {
@@ -625,6 +641,18 @@ class AdminApiController extends Controller
         return response()->json([
             'status'=>true,
             'message'=>'تم ارسال الرسالة'
+        ]);
+    }
+
+    public function complaint_messages($id)
+    {
+        $messages = ComplaintMessage::where('complaint_id',$id)
+            ->orderBy('id')
+            ->get();
+
+        return response()->json([
+            'status'=>true,
+            'data'=>$messages
         ]);
     }
 
