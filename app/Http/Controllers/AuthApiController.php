@@ -339,5 +339,36 @@ class AuthApiController extends Controller
         ]);
     }
 
+    public function admin_check(Request $request)
+    {
+        try {
+            $user = Auth::guard('api_admins')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'التوكن غير صالح أو انتهى'
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => true,
+                'user' => $user
+            ]);
+
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'التوكن انتهى، الرجاء تسجيل الدخول مرة أخرى'
+            ], 401);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'حدث خطأ',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 }

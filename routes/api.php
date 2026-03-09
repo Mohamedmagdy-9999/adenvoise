@@ -53,7 +53,7 @@ Route::prefix('v-admin')->group(function () {
    
     Route::post('admin_login', 'AuthApiController@admin_login');
         Route::middleware(['auth:api_admins', 'admin'])->group(function () {
-
+            Route::get('check_admin', 'AuthApiController@admin_check');
             Route::post('update_admin_profile', 'AuthApiController@update_admin_profile');
             Route::get('complaints', 'AdminApiController@complaints');
             Route::post('update_complaint_status/{id}', 'AdminApiController@update_complaint_status');
