@@ -13,6 +13,8 @@ class Admin extends Authenticatable implements JWTSubject
     use HasFactory;
     protected $guarded = [];
     
+    protected $hidden = ['password'];
+    
 
      public function getJWTIdentifier()
     {

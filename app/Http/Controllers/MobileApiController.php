@@ -163,21 +163,15 @@ class MobileApiController extends Controller
                 'complaint_status_id' => 1,
             ]);
 
-            if ($request->hasFile('attachments')) {
+           if ($request->hasFile('attachments')) {
 
-                $files = $request->file('attachments');
+                foreach ($request->file('attachments') as $file) {
 
-                foreach ($files as $file) {
-
-                    if (!$file instanceof \Illuminate\Http\UploadedFile) {
+                    if (!$file || !$file->isValid()) {
                         continue;
                     }
 
-                    if (!$file->isValid()) {
-                        continue;
-                    }
-
-                    $filename = now()->format('YmdHis') . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $filename = time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
 
                     $file->move(public_path('complaints'), $filename);
 
