@@ -650,7 +650,19 @@ class AdminApiController extends Controller
     {
         $messages = ComplaintMessage::where('complaint_id',$id)
             ->orderBy('id')
-            ->get();
+            ->get()->transform(function ($item) {
+             return [
+                'id'  => $item->id,
+                'complaint_id'=> $item->complaint_id,
+                'sender_type'=> $item->sender_type,
+                'sender_name'=> $item->sender_name,
+                'sender_id'=> $item->sender_id,
+                'message'=> $item->message,
+                'attachment_url'=> $item->attachment_url,
+
+            ];
+        });
+          
 
         return response()->json([
             'status'=>true,
