@@ -600,4 +600,32 @@ class AdminApiController extends Controller
         ]);
     }
 
+    public function admin_send_message(Request $request)
+    {
+        $request->validate([
+            'complaint_id'=>'required|exists:complaints,id',
+            'message'=>'nullable|string',
+            'attachment'=>'nullable|file|max:20480'
+        ]);
+
+        $name = null;
+        if ($file = $request->file('image')) {
+             $name = time() . $file->getClientOriginalName();
+            $file->move('messages', $name);
+        }
+
+        ComplaintMessage::create([
+            'complaint_id'=>$request->complaint_id,
+            'sender_type'=>'admin',
+            'sender_id'=>auth('api_admins')->id(),
+            'message'=>$request->message,
+            'attachment'=>$name
+        ]);
+
+        return response()->json([
+            'status'=>true,
+            'message'=>'تم ارسال الرسالة'
+        ]);
+    }
+
 }

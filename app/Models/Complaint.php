@@ -97,6 +97,9 @@ class Complaint extends Model
          return $this->citizen ? $this->citizen->name : null;
     }
     
-    
+    public function messages()
+    {
+        return $this->hasMany(ComplaintMessage::class,'complaint_id')->latest();
+    }
 
 }
