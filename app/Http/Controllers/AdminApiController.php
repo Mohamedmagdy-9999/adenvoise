@@ -200,7 +200,7 @@ class AdminApiController extends Controller
             'status_id' => $item->complaint_status_id,
             'citizen_name' => $item->citizen_name,
             'citizen_image_url' => $item->citizen_image_url,
-            'complaint_count' => $item->complaintsCount,
+            'complaint_count' => $complaintsCount,
             'created_at' => optional($item->created_at)->format('d-m-Y'),
 
             'attachments' => $item->attachments->map(function ($attachment) {
