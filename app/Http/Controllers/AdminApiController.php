@@ -140,6 +140,7 @@ class AdminApiController extends Controller
                 'level_name' => $item->level_name,
                 'directorate_name' => $item->directorate_name,
                 'neighborhood_name' => $item->neighborhood_name,
+                'entity_name' => $item->entity_name,
                 'lat' => $item->lat,
                 'lang' => $item->lang,
                 'address' => $item->address,
