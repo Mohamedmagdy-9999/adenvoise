@@ -28,6 +28,7 @@ use App\Models\Slider;
 use App\Models\Blog;
 use Illuminate\Support\Facades\File;
 use App\Models\ComplaintMessage;
+use App\Models\ComplaintStatus;
 class AdminApiController extends Controller
 {
 
@@ -681,6 +682,17 @@ class AdminApiController extends Controller
             'status'=>true,
             'data'=>$messages
         ]);
+    }
+
+    public function complaint_status()
+    {
+        $data = ComplaintStatus::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
     }
 
 }

@@ -69,6 +69,8 @@ Route::prefix('v-admin')->group(function () {
             Route::get('types','AdminApiController@types');
             Route::get('levels','AdminApiController@levels');
             Route::get('categories','AdminApiController@categories');
+            Route::get('complaint_status','AdminApiController@complaint_status');
+
 
             Route::get('sliders', 'AdminApiController@sliders');
             Route::post('add_slider', 'AdminApiController@add_slider');
