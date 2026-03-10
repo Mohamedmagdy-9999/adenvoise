@@ -727,6 +727,7 @@ class AdminApiController extends Controller
             'password' => Hash::make($request->password),
             'directorate_id' => $request->directorate_id,
             'entity_id' => $request->entity_id,
+            'status' => 'active',
         ]);
 
         return response()->json([
