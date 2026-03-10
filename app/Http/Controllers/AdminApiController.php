@@ -222,7 +222,7 @@ class AdminApiController extends Controller
     public function update_complaint_status(Request $request,$id)
     {
         $data = Complaint::findOrFail($id);
-        $data->status_id = $request->status_id;
+        $data->complaint_status_id = $request->status_id;
         $data->save();
           
        
