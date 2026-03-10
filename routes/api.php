@@ -88,7 +88,10 @@ Route::prefix('v-admin')->group(function () {
 
             Route::post('add_user', 'AdminApiController@add_user');
             Route::get('users', 'AdminApiController@users');
-            
+
+
+            Route::post('update_user/{id}', 'AdminApiController@update_user');
+            Route::post('toggle_user_status/{id}', 'AdminApiController@toggle_user_status');
 
         });
 

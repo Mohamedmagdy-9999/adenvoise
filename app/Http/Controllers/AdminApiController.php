@@ -770,7 +770,9 @@ class AdminApiController extends Controller
                 'name'=> $item->name,
                 'email'=> $item->email,
                 'phone'=> $item->phone,
+                'directorate_id'=> $item->directorate_id,
                 'directorate_name'=> $item->directorate_name,
+                'entity_id'=> $item->entity_id,
                 'entity_name'=> $item->entity_name,
                 'status'=> $item->status,
                 'created_at' => optional($item->created_at)->format('d-m-Y'),
@@ -780,6 +782,64 @@ class AdminApiController extends Controller
         return response()->json([
             'status' => true,
             'data' => $data,
+        ]);
+    }
+
+    public function update_user(Request $request, $id)
+    {
+        $messages = [
+            'required' => 'حقل :attribute مطلوب.',
+        ];
+
+        $attributes = [
+            'name' => 'الاسم',
+            'email' => 'البريد الالكتروني',
+            'password' => 'كلمة المرور',
+            'directorate_id' => 'المديرية',
+            'entity_id' => 'الجهة',
+            'phone' => 'الجوال',
+        ];
+
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'directorate_id' => 'required|exists:directorates,id',
+            'entity_id' => 'required|exists:entities,id',
+            'email' => 'required|email|unique:users,email,' . $id,
+            'phone' => 'required',
+            'password' => 'nullable|string|min:6|confirmed',
+        ], $messages, $attributes);
+
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'directorate_id' => $request->directorate_id,
+            'entity_id' => $request->entity_id,
+            'password' => $request->password 
+                            ? Hash::make($request->password) 
+                            : $user->password,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم التعديل بنجاح',
+        ]);
+    }
+
+    public function toggle_user_status($id)
+    {
+        $user = User::findOrFail($id);
+
+        $user->status = $user->status == 'active' ? 'notactive' : 'active';
+
+        $user->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تغيير حالة المستخدم',
+            'new_status' => $user->status
         ]);
     }
 }
