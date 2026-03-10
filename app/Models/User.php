@@ -26,6 +26,8 @@ class User extends Authenticatable implements JWTSubject
        
     ];
 
+    protected $appends = ['directorate_name','entity_name'];
+
     /**
      * Relations
      */
@@ -44,6 +46,27 @@ class User extends Authenticatable implements JWTSubject
          
             
         ];
+    }
+
+    public function directorate()
+    {
+        return $this->belongsTo(Directorate::class , 'directorate_id');
+    }
+
+    public function getDirectorateNameAttribute()
+    {
+         return $this->directorate ? $this->directorate->name : null;
+    }
+
+
+    public function entity()
+    {
+        return $this->belongsTo(Entity::class , 'entity_id');
+    }
+
+    public function getEntityNameAttribute()
+    {
+         return $this->entity ? $this->entity->name : null;
     }
     
     

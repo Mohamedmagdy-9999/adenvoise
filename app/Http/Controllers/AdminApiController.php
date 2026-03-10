@@ -736,4 +736,50 @@ class AdminApiController extends Controller
         ]);
     }
 
+    public function users(Request $request)
+    {
+        $data = User::query()
+
+            ->when($request->entity_id, fn ($q, $v) =>
+                $q->where('entity_id', $v))
+
+            ->when($request->directorate_id, fn ($q, $v) =>
+                $q->where('directorate_id', $v))
+
+            // فلترة بالحالة
+            ->when($request->status, fn ($q, $v) =>
+                $q->where('status', $v))
+
+            // البحث بالاسم
+            ->when($request->name, function ($q, $v) {
+                $q->where('name', 'like', "%$v%");
+            })
+
+            ->when($request->from, fn ($q, $v) =>
+                $q->whereDate('created_at', '>=', $v))
+
+            ->when($request->to, fn ($q, $v) =>
+                $q->whereDate('created_at', '<=', $v))
+
+            ->latest()
+            ->paginate(20);
+
+        $data->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'name'=> $item->name,
+                'email'=> $item->email,
+                'phone'=> $item->phone,
+                'directorate_name'=> $item->directorate_name,
+                'entity_name'=> $item->entity_name,
+                'status'=> $item->status,
+                'created_at' => optional($item->created_at)->format('d-m-Y'),
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
 }
