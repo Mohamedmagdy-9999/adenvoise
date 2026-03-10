@@ -281,5 +281,73 @@ class MobileApiController extends Controller
     }
 
 
+    public function send_message(Request $request)
+    {
+
+        $messages = [
+            'image' => 'حقل :attribute يجب أن يكون صورة.',
+            'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+            'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+            'exists' => 'القسم غير موجود.',
+        ];
+
+        $attributes = [
+            'message' => 'الرسالة',
+            'attachment' => 'الملف',
+            'complaint_id' => 'الشكوي',
+        ];
+
+        $request->validate([
+            'complaint_id'=>'required|exists:complaints,id',
+            'message'=>'nullable|string',
+            'attachment'=>'nullable|file|max:20480',
+        ], $messages, $attributes);
+
+       
+
+        $name = null;
+        if ($file = $request->file('attachment')) {
+             $name = time() . $file->getClientOriginalName();
+            $file->move('messages', $name);
+        }
+        $citizen = auth('api_citizens')->user();
+        ComplaintMessage::create([
+            'complaint_id'=>$request->complaint_id,
+            'sender_type'=>'citizen',
+            'sender_id'    => $citizen->id,
+            'sender_name'  => $citizen->name,
+            'message'=>$request->message,
+            'attachment'=>$name
+        ]);
+
+        return response()->json([
+            'status'=>true,
+            'message'=>'تم ارسال الرسالة'
+        ]);
+    }
+
+    public function complaint_messages($id)
+    {
+        $messages = ComplaintMessage::where('complaint_id',$id)
+            ->orderBy('id')
+            ->get()->transform(function ($item) {
+             return [
+                'id'  => $item->id,
+                'complaint_id'=> $item->complaint_id,
+                'sender_type'=> $item->sender_type,
+                'sender_name'=> $item->sender_name,
+                'sender_id'=> $item->sender_id,
+                'message'=> $item->message,
+                'attachment_url'=> $item->attachment_url,
+
+            ];
+        });
+          
+
+        return response()->json([
+            'status'=>true,
+            'data'=>$messages
+        ]);
+    }
 
 }
