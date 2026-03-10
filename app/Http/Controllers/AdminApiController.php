@@ -131,7 +131,7 @@ class AdminApiController extends Controller
             
             ->latest()
 
-            ->paginate(3);
+            ->paginate(20);
 
       
         $data->getCollection()->transform(function ($item) {
