@@ -29,6 +29,7 @@ use App\Models\Blog;
 use Illuminate\Support\Facades\File;
 use App\Models\ComplaintMessage;
 use App\Models\ComplaintStatus;
+
 class AdminApiController extends Controller
 {
 
@@ -693,6 +694,45 @@ class AdminApiController extends Controller
               
         ]);
 
+    }
+
+    public function add_user(Request $request)
+    {
+        $messages = [
+            'required' => 'حقل :attribute مطلوب.',
+        ];
+
+        $attributes = [
+            'name' => 'الاسم',
+            'email' => 'البريد الالكتروني',
+            'password' => 'كلمة المرور',
+            'directorate_id' => 'المديرية',
+            'entity_id' => 'الجهة',
+            'phone' => 'الجوال',
+        ];
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'directorate_id' => 'required|exists:directorates,id',
+            'entity_id' => 'required|exists:entities,id',
+            'email' => 'required|email|unique:users,email',
+            'phone' => 'required',
+            'password' => 'required|string|min:6|confirmed',
+        ], $messages, $attributes);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+            'directorate_id' => $request->directorate_id,
+            'entity_id' => $request->entity_id,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الاضافة بنجاح',
+        ]);
     }
 
 }

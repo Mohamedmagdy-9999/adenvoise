@@ -86,7 +86,8 @@ Route::prefix('v-admin')->group(function () {
             Route::get('citizens', 'AdminApiController@citizens');
             Route::get('citizen_complaints/{id}', 'AdminApiController@citizen_complaints');
 
-            
+            Route::post('add_user', 'AdminApiController@add_user');
+
         });
 
 });
