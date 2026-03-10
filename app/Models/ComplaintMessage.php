@@ -20,7 +20,7 @@ class ComplaintMessage extends Model
 
     public function getAttachmentUrlAttribute()
     {
-        return asset('messages/' . $this->image);
+        return asset('messages/' . $this->attachment);
     }
 
     
