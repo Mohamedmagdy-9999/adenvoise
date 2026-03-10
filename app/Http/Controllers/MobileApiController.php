@@ -26,6 +26,7 @@ use App\Models\Complaint;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Slider;
 use App\Models\Blog;
+use App\Models\ComplaintMessage;
 class MobileApiController extends Controller
 {
 
