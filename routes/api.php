@@ -95,6 +95,11 @@ Route::prefix('v-admin')->group(function () {
 
             Route::get('cards', 'AdminApiController@cards');
 
+            Route::get('complaintsByStatus', 'AdminApiController@complaintsByStatus');
+            Route::get('complaintsByDirectorate', 'AdminApiController@complaintsByDirectorate');
+            Route::get('complaintsByClassification', 'AdminApiController@complaintsByClassification');
+            Route::get('performance', 'AdminApiController@performance');
+
         });
 
 });

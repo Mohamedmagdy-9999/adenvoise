@@ -857,4 +857,127 @@ class AdminApiController extends Controller
             'done' => $done,
         ]);
     }
+
+    private function filterByDate($query, $period)
+    {
+        switch ($period) {
+            case '7days':
+                return $query->where('created_at', '>=', now()->subDays(7));
+            case '1month':
+                return $query->where('created_at', '>=', now()->subMonth());
+            case '3months':
+                return $query->where('created_at', '>=', now()->subMonths(3));
+            case '6months':
+                return $query->where('created_at', '>=', now()->subMonths(6));
+            case '1year':
+                return $query->where('created_at', '>=', now()->subYear());
+            default:
+                return $query->where('created_at', '>=', now()->subDays(7));
+        }
+    }
+    public function complaintsByStatus(Request $request)
+    {
+        $period = $request->period ?? '7days';
+
+        $complaints = Complaint::query();
+        $this->filterByDate($complaints, $period);
+
+        $data = $complaints
+            ->selectRaw('complaint_status_id, COUNT(*) as total')
+            ->groupBy('complaint_status_id')
+            ->with('status')
+            ->get()
+            ->map(function ($item) {
+
+                $colors = [
+                    'جديد' => '#3B82F6',
+                    'قيد المعالجة' => '#F59E0B',
+                    'متأخرة' => '#EF4444',
+                    'تم حلها' => '#22C55E'
+                ];
+
+                return [
+                    'name' => $item->status->name ?? '',
+                    'value' => $item->total,
+                    'color' => $colors[$item->status->name] ?? '#999'
+                ];
+            });
+
+        return response()->json($data);
+    }
+
+    public function complaintsByDirectorate(Request $request)
+    {
+        $period = $request->period ?? '7days';
+
+        $complaints = Complaint::query();
+        $this->filterByDate($complaints, $period);
+
+        $data = $complaints
+            ->selectRaw('directorate_id, COUNT(*) as total')
+            ->groupBy('directorate_id')
+            ->with('directorate')
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'name' => $item->directorate->name ?? '',
+                    'value' => $item->total,
+                    'lat' => $item->lat ?? null,
+                    'lng' => $item->lang ?? null,
+                ];
+            });
+
+        return response()->json($data);
+    }
+
+    public function complaintsByClassification(Request $request)
+    {
+        $period = $request->period ?? '7days';
+
+        $complaints = Complaint::query();
+        $this->filterByDate($complaints, $period);
+
+        $data = $complaints
+            ->selectRaw('complaint_type_id, COUNT(*) as total')
+            ->groupBy('complaint_type_id')
+            ->with('complaint_type')
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'name' => $item->complaint_type->name ?? '',
+                    'value' => $item->total,
+                    'color' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
+                ];
+            });
+
+        return response()->json($data);
+    }
+
+    public function performance(Request $request)
+    {
+        $period = $request->period ?? '7days';
+
+        $query = Complaint::query();
+        $this->filterByDate($query, $period);
+
+        $data = $query
+            ->selectRaw('DATE(created_at) as day,
+            COUNT(*) as incoming,
+            SUM(CASE WHEN complaint_status_id = 4 THEN 1 ELSE 0 END) as resolved')
+            ->groupBy('day')
+            ->orderBy('day','desc')
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'day' => $item->day,
+                    'incoming' => $item->incoming,
+                    'resolved' => $item->resolved,
+                ];
+            });
+
+        return response()->json($data);
+    }
 }
