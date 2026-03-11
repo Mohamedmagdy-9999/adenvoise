@@ -842,4 +842,19 @@ class AdminApiController extends Controller
             'new_status' => $user->status
         ]);
     }
+    
+    public function cards()
+    {
+        $total = ComplaintStatus::count();
+        $new = ComplaintStatus::where('complaint_status_id',1)->count();
+        $inprogress = ComplaintStatus::where('complaint_status_id',2)->count();
+        $done = ComplaintStatus::where('complaint_status_id',3)->count();
+        return response()->json([
+            'status' => true,
+            'total' => $total,
+            'new' => $new,
+            'inprogress' => $inprogress,
+            'done' => $done,
+        ]);
+    }
 }

@@ -93,6 +93,8 @@ Route::prefix('v-admin')->group(function () {
             Route::post('update_user/{id}', 'AdminApiController@update_user');
             Route::post('toggle_user_status/{id}', 'AdminApiController@toggle_user_status');
 
+            Route::get('cards', 'AdminApiController@cards');
+
         });
 
 });
