@@ -914,7 +914,12 @@ class AdminApiController extends Controller
         $this->filterByDate($complaints, $period);
 
         $data = $complaints
-            ->selectRaw('directorate_id, COUNT(*) as total')
+            ->selectRaw('
+                directorate_id,
+                COUNT(*) as total,
+                MIN(lat) as lat,
+                MIN(lang) as lng
+            ')
             ->groupBy('directorate_id')
             ->with('directorate')
             ->get()
@@ -923,8 +928,8 @@ class AdminApiController extends Controller
                 return [
                     'name' => $item->directorate->name ?? '',
                     'value' => $item->total,
-                    'lat' => $item->lat ?? null,
-                    'lng' => $item->lang ?? null,
+                    'lat' => $item->lat,
+                    'lng' => $item->lng,
                 ];
             });
 
