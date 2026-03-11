@@ -845,10 +845,10 @@ class AdminApiController extends Controller
     
     public function cards()
     {
-        $total = ComplaintStatus::count();
-        $new = ComplaintStatus::where('complaint_status_id',1)->count();
-        $inprogress = ComplaintStatus::where('complaint_status_id',2)->count();
-        $done = ComplaintStatus::where('complaint_status_id',3)->count();
+        $total = Complaint::count();
+        $new = Complaint::where('complaint_status_id',1)->count();
+        $inprogress = Complaint::where('complaint_status_id',2)->count();
+        $done = Complaint::where('complaint_status_id',3)->count();
         return response()->json([
             'status' => true,
             'total' => $total,
