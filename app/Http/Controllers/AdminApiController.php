@@ -1021,9 +1021,9 @@ class AdminApiController extends Controller
             ')
             ->with([
                 'complaint_type:id,name_ar,name_en',
-                'entity:id,name',
-                'directorate:id,name',
-                'level:id,name'
+                'entity:id,name_ar,name_en',
+                'directorate:id,name_ar,name_en',
+                'level:id,name_ar,name_en'
             ])
             ->groupBy(
                 'complaint_type_id',
