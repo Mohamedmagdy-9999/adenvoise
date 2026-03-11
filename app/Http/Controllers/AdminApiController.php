@@ -985,4 +985,68 @@ class AdminApiController extends Controller
 
         return response()->json($data);
     }
+
+    public function newcomplaints(Request $request)
+    {
+        $data = Complaint::latest()->paginate(20);
+
+        $data->getCollection()->transform(function ($item) {
+            return [
+                'id' => $item->id,
+                'complaint_type_name' => $item->complaint_type_name,
+                'directorate_name' => $item->directorate_name,
+                'entity_name' => $item->entity_name,
+                'status_name' => $item->status_name,
+                'status_id' => $item->complaint_status_id,
+                'created_at' => optional($item->created_at)->format('d-m-Y'),
+
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
+
+
+    public function communityPressureAndTrendingComplaints()
+    {
+        $data = Complaint::selectRaw('
+                complaint_type_id,
+                entity_id,
+                directorate_id,
+                speel_level_id,
+                COUNT(*) as total
+            ')
+            ->with([
+                'complaint_type:id,name',
+                'entity:id,name',
+                'directorate:id,name',
+                'level:id,name'
+            ])
+            ->groupBy(
+                'complaint_type_id',
+                'entity_id',
+                'directorate_id',
+                'speel_level_id'
+            )
+            ->orderByDesc('total')
+            ->get()
+            ->map(function ($item) {
+
+                return [
+                    'complaint_type' => $item->complaint_type->name ?? null,
+                    'entity' => $item->entity->name ?? null,
+                    'directorate' => $item->directorate->name ?? null,
+                    'level' => $item->level->name ?? null,
+                    'count' => $item->total
+                ];
+            });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
+    }
 }

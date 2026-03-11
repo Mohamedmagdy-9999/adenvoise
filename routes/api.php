@@ -100,6 +100,9 @@ Route::prefix('v-admin')->group(function () {
             Route::get('complaintsByClassification', 'AdminApiController@complaintsByClassification');
             Route::get('performance', 'AdminApiController@performance');
 
+            Route::get('newcomplaints', 'AdminApiController@newcomplaints');
+            Route::get('communityPressureAndTrendingComplaints', 'AdminApiController@communityPressureAndTrendingComplaints');
+
         });
 
 });
