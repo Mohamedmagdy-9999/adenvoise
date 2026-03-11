@@ -1020,7 +1020,7 @@ class AdminApiController extends Controller
                 COUNT(*) as total
             ')
             ->with([
-                'complaint_type:id,name',
+                'complaint_type:id,name_ar,name_en',
                 'entity:id,name',
                 'directorate:id,name',
                 'level:id,name'
