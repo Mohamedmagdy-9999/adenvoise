@@ -102,7 +102,7 @@ Route::prefix('v-admin')->group(function () {
 
             Route::get('newcomplaints', 'AdminApiController@newcomplaints');
             Route::get('communityPressureAndTrendingComplaints', 'AdminApiController@communityPressureAndTrendingComplaints');
-            Route::get('get_citizen_details', 'AdminApiController@get_citizen_details');
+            Route::get('get_citizen_details/{id}', 'AdminApiController@get_citizen_details');
         });
 
 });
