@@ -446,7 +446,7 @@ class AuthApiController extends Controller
         $data = $request->validate([
             'name' => 'sometimes|string|max:255',
            
-            'email' => 'sometimes|email|unique:admins,email,' . $user->id,
+            'email' => 'sometimes|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8',
         ], $messages);
 
