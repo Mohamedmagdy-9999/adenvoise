@@ -1049,4 +1049,27 @@ class AdminApiController extends Controller
             'data' => $data
         ]);
     }
+
+    public function get_citizen_details($id)
+    {
+        $citizen = Citizen::withCount('complaints')->findOrFail($id);
+
+        $data = [
+            'id'  => $citizen->id,
+            'name'=> $citizen->name,
+            'email'=> $citizen->email,
+            'identity_number'=> $citizen->identity_number,
+            'phone'=> $citizen->phone,
+            'directorate_name'=> $citizen->directorate_name,
+            'directorate_id'=> $citizen->directorate_id,
+            'neighborhood_name'=> $citizen->neighborhood_name,
+            'neighborhood_id'=> $citizen->neighborhood_id,
+            'complaint_count' => $citizen->complaints_count,
+        ];
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
+    }
 }
