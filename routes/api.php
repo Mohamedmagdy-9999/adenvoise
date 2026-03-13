@@ -122,7 +122,7 @@ Route::prefix('v-user')->group(function () {
             Route::post('update_complaint_status/{id}', 'UserApiController@update_complaint_status');
             
             Route::get('complaint_messages/{id}', 'UserApiController@complaint_messages');
-            Route::post('user_send_message', 'UserApiController@admin_send_message');
+            Route::post('user_send_message', 'UserApiController@user_send_message');
             
 
           
