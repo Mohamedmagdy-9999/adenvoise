@@ -484,7 +484,9 @@ class AuthApiController extends Controller
                 'name'  => $admin->name,
                 'email' => $admin->email,
                 'phone' => $admin->phone,
-                'guard' => 'api_admins',
+                'directorate_name' => $admin->directorate_name,
+                'entity_name' => $admin->entity_name,
+                'guard' => 'api_users',
             ];
 
             return response()->json([
