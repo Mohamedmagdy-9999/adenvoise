@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
          'detect.jwt' => \App\Http\Middleware\DetectJwtGuard::class,
          'citizen' => \App\Http\Middleware\EnsureCitizen::class,
          'admin' => \App\Http\Middleware\EnsureAdmin::class,
+         'user' => \App\Http\Middleware\EnsureUser::class,
     ];
 }
