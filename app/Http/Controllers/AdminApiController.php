@@ -579,7 +579,7 @@ class AdminApiController extends Controller
 
     public function citizen_complaints(Request $request,$id)
     {
-        $data = Complaint::where('citizen_id',$id)->with('attachments')->latest()->paginate(20);
+        $data = Complaint::where('citizen_id',$id)->with('attachments')->withAvg('ratings','rate')->latest()->paginate(20);
            
 
         $data->getCollection()->transform(function ($item) {
@@ -599,6 +599,7 @@ class AdminApiController extends Controller
                 'entity_name' => $item->entity_name,
                 //'status_id' => $item->complaint_status_id,
                 'citizen_name' => $item->citizen_name,
+                'rate_value' => $item->ratings_avg_rate,
                 'created_at' => optional($item->created_at)->format('d-m-Y'),
 
                 // 'attachments' => $item->attachments->map(function ($attachment) {

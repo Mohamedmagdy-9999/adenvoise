@@ -9,7 +9,7 @@ class Complaint extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $appends = ['complaint_type_name','type_name','level_name','directorate_name','neighborhood_name','entity_name','status_name','citizen_name','citizen_image_url'];
+    protected $appends = ['complaint_type_name','type_name','level_name','directorate_name','neighborhood_name','entity_name','status_name','citizen_name','citizen_image_url','rate_value'];
 
     public function attachments()
     {
@@ -110,6 +110,10 @@ class Complaint extends Model
     public function ratings()
     {
         return $this->hasMany(ComplaintRate::class,'complaint_id');
+    }
+    public function getRateValueAttribute()
+    {
+        return $this->ratings()->avg('rate');
     }
 
 }
