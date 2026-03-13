@@ -109,7 +109,7 @@ class Complaint extends Model
 
     public function ratings()
     {
-        return $this->hasMany(ComplaintRating::class,'complaint_id');
+        return $this->hasMany(ComplaintRate::class,'complaint_id');
     }
 
 }

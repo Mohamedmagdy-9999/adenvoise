@@ -78,6 +78,6 @@ class Citizen extends Authenticatable implements JWTSubject
 
     public function ratings()
     {
-        return $this->hasMany(ComplaintRating::class);
+        return $this->hasMany(ComplaintRate::class, 'citizen_id');
     }
 }

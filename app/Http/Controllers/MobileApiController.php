@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Slider;
 use App\Models\Blog;
 use App\Models\ComplaintMessage;
-use App\Models\ComplaintRating;
+use App\Models\ComplaintRate;
 class MobileApiController extends Controller
 {
 
@@ -380,7 +380,7 @@ class MobileApiController extends Controller
             ]);
         }
 
-        $rating = ComplaintRating::create([
+        $rating = ComplaintRate::create([
             'complaint_id' => $request->complaint_id,
             'citizen_id' => $citizen->id,
             'rate' => $request->rate,
