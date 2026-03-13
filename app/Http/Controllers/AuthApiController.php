@@ -383,4 +383,131 @@ class AuthApiController extends Controller
     }
 
 
+
+
+    public function user_login(Request $request)
+    {
+        // ✅ validation
+        $request->validate([
+            'email' => 'required',
+            'password' => 'required',
+        ], [
+            'email.required' => 'البريد الالكتروني مطلوب',
+           
+            'password.required' => 'كلمة المرور مطلوبة',
+        ]);
+
+        // ✅ تحديد credentials حسب المدخل
+      
+            $credentials = [
+                'email' => $request->email,
+                'password' => $request->password,
+                
+            ];
+      
+
+        // ✅ محاولة تسجيل الدخول
+        if (!$token = Auth::guard('api_users')->attempt($credentials)) {
+            throw ValidationException::withMessages([
+                'login' => ['بيانات الدخول غير صحيحة'],
+            ]);
+        }
+
+        $user = Auth::guard('api_admins')->user();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تسجيل الدخول بنجاح',
+            'guard' => 'api_admins',
+            'token' => $token,
+            
+        ]);
+    }
+
+    public function update_user_profile(Request $request)
+    {
+        $user = Auth::guard('api_users')->user(); // المستخدم الحالي من التوكن
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المستخدم غير موجود أو التوكن غير صالح'
+            ], 401);
+        }
+
+        $messages = [
+          
+            'name.max' => 'الاسم طويل جدًا',
+            'email.email' => 'صيغة البريد الإلكتروني غير صحيحة',
+            'email.unique' => 'البريد الإلكتروني مستخدم من قبل',
+           
+        ];
+
+        $data = $request->validate([
+            'name' => 'sometimes|string|max:255',
+           
+            'email' => 'sometimes|email|unique:admins,email,' . $user->id,
+            'password' => 'nullable|string|min:8',
+        ], $messages);
+
+       
+        // تحديث كلمة المرور لو موجودة
+        if (!empty($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+           
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تحديث البيانات بنجاح',
+            'user' => $user
+        ]);
+    }
+
+    public function user_check(Request $request)
+    {
+        try {
+
+            $admin = Auth::guard('api_users')->user();
+
+            if (!$admin) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'التوكن غير صالح أو انتهى'
+                ], 401);
+            }
+
+            $data = [
+                'id'    => $admin->id,
+                'name'  => $admin->name,
+                'email' => $admin->email,
+                'phone' => $admin->phone,
+                'guard' => 'api_admins',
+            ];
+
+            return response()->json([
+                'status' => true,
+                'user' => $data
+            ]);
+
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'التوكن انتهى، الرجاء تسجيل الدخول مرة أخرى'
+            ], 401);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'حدث خطأ',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 }

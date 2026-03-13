@@ -108,3 +108,33 @@ Route::prefix('v-admin')->group(function () {
         });
 
 });
+
+
+Route::prefix('v-user')->group(function () {
+    
+   
+    Route::post('user_login', 'AuthApiController@user_login');
+        Route::middleware(['auth:api_users', 'user'])->group(function () {
+            Route::get('check_user', 'AuthApiController@user_check');
+            Route::post('update_user_profile', 'AuthApiController@update_user_profile');
+            // Route::get('complaints', 'AdminApiController@complaints');
+            // Route::get('complaint_details/{id}', 'AdminApiController@complaint_details');
+            // Route::post('update_complaint_status/{id}', 'AdminApiController@update_complaint_status');
+            
+            // Route::get('complaint_messages/{id}', 'AdminApiController@complaint_messages');
+            // Route::post('admin_send_message', 'AdminApiController@admin_send_message');
+            
+
+          
+
+          
+
+            // Route::get('citizens', 'AdminApiController@citizens');
+            // Route::get('citizen_complaints/{id}', 'AdminApiController@citizen_complaints');
+
+
+           
+            // Route::get('get_citizen_details/{id}', 'AdminApiController@get_citizen_details');
+        });
+
+});
