@@ -30,78 +30,15 @@ use Illuminate\Support\Facades\File;
 use App\Models\ComplaintMessage;
 use App\Models\ComplaintStatus;
 
-class AdminApiController extends Controller
+class UserApiController extends Controller
 {
 
-    public function directorates()
-    {
-        $data = Directorate::latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
-
-    }
-
-    public function neighborhood($id)
-    {
-        $data = Neighborhood::where('directorate_id',$id)->latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
-    }
-
-    public function types()
-    {
-        $data = Type::latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
-
-    }
-
-
-    public function levels()
-    {
-        $data = SpeelLevel::latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
-
-    }
-
-    public function categories()
-    {
-        $data = Category::latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
-
-    }
-
-    public function complaint_types()
-    {
-        $data = ComplaintType::latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
-
-    }
+   
 
     public function complaints(Request $request)
     {
-        $data = Complaint::with('attachments')
+        $user = Auth::guard('api_users')->user();
+        $data = Complaint::with('attachments')->where('directorate_id',$user->directorate_id)->where('entity_id',$user->entity_id)
             ->when($request->neighborhood_id, fn ($q, $v) =>
                 $q->where('neighborhood_id', $v))
 

@@ -117,12 +117,12 @@ Route::prefix('v-user')->group(function () {
         Route::middleware(['auth:api_users', 'user'])->group(function () {
             Route::get('check_user', 'AuthApiController@user_check');
             Route::post('update_user_profile', 'AuthApiController@update_user_profile');
-            // Route::get('complaints', 'AdminApiController@complaints');
-            // Route::get('complaint_details/{id}', 'AdminApiController@complaint_details');
-            // Route::post('update_complaint_status/{id}', 'AdminApiController@update_complaint_status');
+            Route::get('complaints', 'UserApiController@complaints');
+            Route::get('complaint_details/{id}', 'UserApiController@complaint_details');
+            Route::post('update_complaint_status/{id}', 'UserApiController@update_complaint_status');
             
-            // Route::get('complaint_messages/{id}', 'AdminApiController@complaint_messages');
-            // Route::post('admin_send_message', 'AdminApiController@admin_send_message');
+            Route::get('complaint_messages/{id}', 'UserApiController@complaint_messages');
+            Route::post('user_send_message', 'UserApiController@admin_send_message');
             
 
           
