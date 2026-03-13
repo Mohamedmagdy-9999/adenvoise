@@ -369,7 +369,7 @@ class MobileApiController extends Controller
             ]);
         }
 
-        $exists = ComplaintRating::where('complaint_id',$request->complaint_id)
+        $exists = ComplaintRate::where('complaint_id',$request->complaint_id)
             ->where('citizen_id',$citizen->id)
             ->exists();
 
