@@ -42,6 +42,8 @@ Route::prefix('v-mobile')->group(function () {
 
            
             Route::get('blogs', 'MobileApiController@blogs');
+
+            Route::post('add_rate_complaint','MobileApiController@add_rate_complaint');
             
         });
 

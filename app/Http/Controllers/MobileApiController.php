@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Slider;
 use App\Models\Blog;
 use App\Models\ComplaintMessage;
+use App\Models\ComplaintRating;
 class MobileApiController extends Controller
 {
 
@@ -348,6 +349,48 @@ class MobileApiController extends Controller
         return response()->json([
             'status'=>true,
             'data'=>$messages
+        ]);
+    }
+
+    public function add_rate_complaint(Request $request)
+    {
+         $citizen = auth('api_citizens')->user();
+
+        $validator = Validator::make($request->all(), [
+            'complaint_id' => 'required|exists:complaints,id',
+            'rate' => 'required|integer|min:1|max:5',
+           // 'comment' => 'nullable|string'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors()->first()
+            ]);
+        }
+
+        $exists = ComplaintRating::where('complaint_id',$request->complaint_id)
+            ->where('citizen_id',$citizen->id)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'status' => false,
+                'message' => 'لقد قمت بتقييم هذه الشكوى مسبقاً'
+            ]);
+        }
+
+        $rating = ComplaintRating::create([
+            'complaint_id' => $request->complaint_id,
+            'citizen_id' => $citizen->id,
+            'rate' => $request->rate,
+          //  'comment' => $request->comment
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم إضافة التقييم بنجاح',
+            'data' => $rating
         ]);
     }
 

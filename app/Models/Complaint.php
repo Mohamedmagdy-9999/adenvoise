@@ -107,4 +107,9 @@ class Complaint extends Model
         return $this->hasMany(ComplaintMessage::class,'complaint_id')->latest();
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(ComplaintRating::class,'complaint_id');
+    }
+
 }
