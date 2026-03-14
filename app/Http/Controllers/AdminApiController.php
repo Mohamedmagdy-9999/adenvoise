@@ -1076,4 +1076,76 @@ class AdminApiController extends Controller
             'data' => $data
         ]);
     }
+
+    public function complaints_report(Request $request)
+    {
+        $query = Complaint::query();
+
+        // فلترة بالتاريخ
+        $query->when($request->from, fn ($q, $v) =>
+            $q->whereDate('created_at', '>=', $v));
+
+        $query->when($request->to, fn ($q, $v) =>
+            $q->whereDate('created_at', '<=', $v));
+
+        $complaints = $query->with(['complaint_type','directorate'])->get();
+
+        $report = [];
+
+        foreach ($complaints as $complaint) {
+
+            $type = $complaint->complaint_type->name ?? 'غير محدد';
+            $directorate = $complaint->directorate->name ?? 'غير محدد';
+
+            if (!isset($report[$type])) {
+                $report[$type] = [];
+            }
+
+            if (!isset($report[$type][$directorate])) {
+
+                $report[$type][$directorate] = [
+                    'processing_urgent' => 0,
+                    'processing_normal' => 0,
+                    'processing_total' => 0,
+
+                    'solved_urgent' => 0,
+                    'solved_normal' => 0,
+                    'solved_total' => 0,
+
+                    'total' => 0
+                ];
+            }
+
+            // قيد المعالجة
+            if ($complaint->complaint_status_id == 2) {
+
+                if ($complaint->speel_level_id == 1) {
+                    $report[$type][$directorate]['processing_urgent']++;
+                } else {
+                    $report[$type][$directorate]['processing_normal']++;
+                }
+
+                $report[$type][$directorate]['processing_total']++;
+            }
+
+            // تم الحل
+            if ($complaint->complaint_status_id == 3) {
+
+                if ($complaint->speel_level_id == 1) {
+                    $report[$type][$directorate]['solved_urgent']++;
+                } else {
+                    $report[$type][$directorate]['solved_normal']++;
+                }
+
+                $report[$type][$directorate]['solved_total']++;
+            }
+
+            $report[$type][$directorate]['total']++;
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $report
+        ]);
+    }
 }
