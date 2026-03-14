@@ -32,6 +32,7 @@ use App\Models\ComplaintStatus;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use App\Models\Entity;
+
 class AdminApiController extends Controller
 {
 
@@ -1007,6 +1008,8 @@ class AdminApiController extends Controller
         return response()->json($data);
     }
 
+   
+
     public function performance(Request $request)
     {
         $period = $request->period ?? '7days';
@@ -1019,14 +1022,56 @@ class AdminApiController extends Controller
             COUNT(*) as incoming,
             SUM(CASE WHEN complaint_status_id = 4 THEN 1 ELSE 0 END) as resolved')
             ->groupBy('day')
-            ->orderBy('day','desc')
+            ->orderBy('day','asc')
             ->get()
-            ->map(function ($item) {
+            ->map(function ($item, $index) use ($period) {
+
+                $day = $item->day;
+
+                if ($period == '7days') {
+
+                    $days = [
+                        'Saturday' => 'السبت',
+                        'Sunday' => 'الأحد',
+                        'Monday' => 'الإثنين',
+                        'Tuesday' => 'الثلاثاء',
+                        'Wednesday' => 'الأربعاء',
+                        'Thursday' => 'الخميس',
+                        'Friday' => 'الجمعة',
+                    ];
+
+                    $dayName = Carbon::parse($day)->format('l');
+                    $day = $days[$dayName] ?? $dayName;
+
+                } elseif ($period == '1month') {
+
+                    $day = 'الأسبوع ' . ceil(($index + 1));
+
+                } elseif ($period == '3months') {
+
+                    $months = [
+                        1 => 'يناير',
+                        2 => 'فبراير',
+                        3 => 'مارس',
+                        4 => 'أبريل',
+                        5 => 'مايو',
+                        6 => 'يونيو',
+                        7 => 'يوليو',
+                        8 => 'أغسطس',
+                        9 => 'سبتمبر',
+                        10 => 'أكتوبر',
+                        11 => 'نوفمبر',
+                        12 => 'ديسمبر',
+                    ];
+
+                    $monthNumber = Carbon::parse($item->day)->month;
+                    $day = $months[$monthNumber] ?? $monthNumber;
+                }
 
                 return [
-                    'day' => $item->day,
-                    'incoming' => $item->incoming,
-                    'resolved' => $item->resolved,
+                    'day' => $day,
+                    'incoming' => (int) $item->incoming,
+                    'resolved' => (int) $item->resolved,
                 ];
             });
 
