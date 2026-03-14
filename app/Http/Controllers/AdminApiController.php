@@ -1266,6 +1266,8 @@ class AdminApiController extends Controller
                 return [
                     'id' => $item->id,
                     'name' => $item->name,
+                    'name_en' => $item->name_en,
+                    'name_ar' => $item->name_ar,
                     'status' => $item->status,
                     'count' => $item->neighborhood_count,
                 ];
