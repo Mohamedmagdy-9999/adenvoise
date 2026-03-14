@@ -67,6 +67,7 @@ Route::prefix('v-admin')->group(function () {
             
 
             Route::get('directorates','AdminApiController@directorates');
+            Route::get('entities','AdminApiController@entities');
             Route::get('neighborhoods/{id}','AdminApiController@neighborhood');
             Route::get('types','AdminApiController@types');
             Route::get('levels','AdminApiController@levels');
