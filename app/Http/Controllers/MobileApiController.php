@@ -33,7 +33,7 @@ class MobileApiController extends Controller
 
     public function directorates()
     {
-        $data = Directorate::latest()->get();
+        $data = Directorate::where('status', 'active')->latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,
@@ -44,7 +44,7 @@ class MobileApiController extends Controller
 
     public function neighborhood($id)
     {
-        $data = Neighborhood::where('directorate_id',$id)->latest()->get();
+        $data = Neighborhood::where('directorate_id',$id)->where('status','active')->latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,

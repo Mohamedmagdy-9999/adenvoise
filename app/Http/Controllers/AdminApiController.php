@@ -1293,5 +1293,119 @@ class AdminApiController extends Controller
             'new_status' => $directorate->status
         ]);
     }
+
+
+
+
+    public function add_neighborhood(Request $request)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+                'exists' => ':attribute غير موجود',
+            ];
+            
+            $attributes = [
+                'name_en' => 'الاسم بالانجليزي',
+                'name_ar' => 'الاسم بالعربي',
+                'directorate_id' => 'المديرية',
+              
+            ];
+            
+            $request->validate([
+                'directorate_id' => 'required|exists:directorates,id',
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+              
+            ], $messages, $attributes);
+
+            
+
+            $neighborhood = new Neighborhood();
+            $neighborhood->directorate_id  = $request->directorate_id;
+            $neighborhood->name_ar  = $request->name_ar;
+            $neighborhood->name_en  = $request->name_en;
+            $neighborhood->status = 'active';
+            $neighborhood->save();
+
+            return response()->json([
+                'message' => 'تم الاضافة',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function update_neighborhood(Request $request, $id)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+                'exists' => ':attribute غير موجود',
+            ];
+            
+            $attributes = [
+                'name_en' => 'الاسم بالانجليزي',
+                'name_ar' => 'الاسم بالعربي',
+                'directorate_id' => 'المديرية',
+              
+            ];
+            
+            $request->validate([
+                'directorate_id' => 'required|exists:directorates,id',
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+              
+            ], $messages, $attributes);
+
+            
+           
+
+            $neighborhood = Neighborhood::findOrFail($id);
+            $neighborhood->directorate_id  = $request->directorate_id;
+            $neighborhood->name_ar  = $request->name_ar;
+            $neighborhood->name_en  = $request->name_en;
+            $neighborhood->save();
+
+            return response()->json([
+                'message' => 'تم التعديل',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function get_neighborhoods()
+    {
+        $data = Neighborhood::latest()
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'name_en' => $item->name_en,
+                    'name_ar' => $item->name_ar,
+                    'status' => $item->status,
+                    'directorate_id' => $item->directorate_id,
+                    'directorate_name' => $item->directorate_name,
+                ];
+            });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
+
+    public function toggle_neighborhood_status($id)
+    {
+       $neighborhood = Neighborhood::findOrFail($id);
+
+       $neighborhood->status =$neighborhood->status == 'active' ? 'notactive' : 'active';
+
+       $neighborhood->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تغيير حالة المديرية',
+            'new_status' => $neighborhood->status,
+        ]);
+    }
     
 }

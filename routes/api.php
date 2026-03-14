@@ -113,6 +113,12 @@ Route::prefix('v-admin')->group(function () {
             Route::post('add_directorate', 'AdminApiController@add_directorate');
             Route::post('update_directorate/{id}', 'AdminApiController@update_directorate');
             Route::post('toggle_directorate_status/{id}', 'AdminApiController@toggle_directorate_status');
+
+
+            Route::get('get_neighborhoods', 'AdminApiController@get_neighborhoods');
+            Route::post('add_neighborhood', 'AdminApiController@add_neighborhood');
+            Route::post('update_neighborhood/{id}', 'AdminApiController@update_neighborhood');
+            Route::post('toggle_neighborhood_status/{id}', 'AdminApiController@toggle_neighborhood_status');
         });
 
 });
