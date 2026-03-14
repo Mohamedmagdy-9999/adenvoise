@@ -1019,7 +1019,7 @@ public function performance(Request $request)
     $results = $query
         ->selectRaw('DATE(created_at) as day,
         COUNT(*) as incoming,
-        SUM(CASE WHEN complaint_status_id = 4 THEN 1 ELSE 0 END) as resolved')
+        SUM(CASE WHEN complaint_status_id = 3 THEN 1 ELSE 0 END) as resolved')
         ->groupBy('day')
         ->orderBy('day')
         ->get()
