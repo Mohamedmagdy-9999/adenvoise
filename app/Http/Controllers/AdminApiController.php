@@ -966,22 +966,38 @@ class AdminApiController extends Controller
     {
         $period = $request->period ?? '7days';
 
-        $complaints = Complaint::query();
-        $this->filterByDate($complaints, $period);
+        $data = ComplaintType::leftJoin('complaints', function ($join) use ($period) {
 
-        $data = $complaints
-            ->selectRaw('complaint_type_id, COUNT(*) as total')
-            ->groupBy('complaint_type_id')
-            ->with('complaint_type')
-            ->get()
-            ->map(function ($item) {
+            $join->on('complaint_types.id', '=', 'complaints.complaint_type_id');
 
-                return [
-                    'name' => $item->complaint_type->name ?? '',
-                    'value' => $item->total,
-                    'color' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
-                ];
-            });
+            // فلترة التاريخ
+            if ($period == '7days') {
+                $join->where('complaints.created_at', '>=', now()->subDays(7));
+            }
+
+            if ($period == '30days') {
+                $join->where('complaints.created_at', '>=', now()->subDays(30));
+            }
+
+        })
+        ->selectRaw('
+            complaint_types.id,
+            complaint_types.name_ar,
+            complaint_types.name_en,
+            COUNT(complaints.id) as total
+        ')
+        ->groupBy('complaint_types.id','complaint_types.name_ar','complaint_types.name_en')
+        ->get()
+        ->map(function ($item) {
+
+            return [
+                'name' => app()->getLocale() == 'ar'
+                            ? $item->name_ar
+                            : $item->name_en,
+                'value' => (int) $item->total,
+                'color' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
+            ];
+        });
 
         return response()->json($data);
     }
