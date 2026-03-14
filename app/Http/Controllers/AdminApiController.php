@@ -926,28 +926,38 @@ class AdminApiController extends Controller
     {
         $period = $request->period ?? '7days';
 
-        $complaints = Complaint::query();
-        $this->filterByDate($complaints, $period);
+        $data = Directorate::leftJoin('complaints', function ($join) use ($period) {
 
-        $data = $complaints
-            ->selectRaw('
-                directorate_id,
-                COUNT(*) as total,
-                MIN(lat) as lat,
-                MIN(lang) as lng
-            ')
-            ->groupBy('directorate_id')
-            ->with('directorate')
-            ->get()
-            ->map(function ($item) {
+            $join->on('directorates.id', '=', 'complaints.directorate_id');
 
-                return [
-                    'name' => $item->directorate->name ?? '',
-                    'value' => $item->total,
-                    'lat' => $item->lat,
-                    'lng' => $item->lng,
-                ];
-            });
+            // فلترة التاريخ داخل الـ join
+            if ($period == '7days') {
+                $join->where('complaints.created_at', '>=', now()->subDays(7));
+            }
+
+            if ($period == '30days') {
+                $join->where('complaints.created_at', '>=', now()->subDays(30));
+            }
+        })
+        ->selectRaw('
+            directorates.id,
+            directorates.name_ar,
+            directorates.name_en,
+            COUNT(complaints.id) as total,
+            MIN(complaints.lat) as lat,
+            MIN(complaints.lang) as lng
+        ')
+        ->groupBy('directorates.id','directorates.name_ar','directorates.name_en')
+        ->get()
+        ->map(function ($item) {
+
+            return [
+                'name' => app()->getLocale() == 'ar' ? $item->name_ar : $item->name_en,
+                'value' => (int) $item->total,
+                'lat' => $item->lat,
+                'lng' => $item->lng,
+            ];
+        });
 
         return response()->json($data);
     }
