@@ -1021,13 +1021,38 @@ public function performance(Request $request)
         COUNT(*) as incoming,
         SUM(CASE WHEN complaint_status_id = 4 THEN 1 ELSE 0 END) as resolved')
         ->groupBy('day')
-        ->orderBy('day','asc')
+        ->orderBy('day')
         ->get()
         ->keyBy('day');
 
+    $daysArabic = [
+        'Saturday' => 'السبت',
+        'Sunday' => 'الأحد',
+        'Monday' => 'الإثنين',
+        'Tuesday' => 'الثلاثاء',
+        'Wednesday' => 'الأربعاء',
+        'Thursday' => 'الخميس',
+        'Friday' => 'الجمعة',
+    ];
+
+    $monthsArabic = [
+        1 => 'يناير',
+        2 => 'فبراير',
+        3 => 'مارس',
+        4 => 'أبريل',
+        5 => 'مايو',
+        6 => 'يونيو',
+        7 => 'يوليو',
+        8 => 'أغسطس',
+        9 => 'سبتمبر',
+        10 => 'أكتوبر',
+        11 => 'نوفمبر',
+        12 => 'ديسمبر',
+    ];
+
     /*
     |--------------------------------------------------------------------------
-    | تحديد الفترة
+    | 7 Days
     |--------------------------------------------------------------------------
     */
 
@@ -1036,32 +1061,92 @@ public function performance(Request $request)
         $start = now()->subDays(6);
         $end = now();
 
-        $daysArabic = [
-            'Saturday' => 'السبت',
-            'Sunday' => 'الأحد',
-            'Monday' => 'الإثنين',
-            'Tuesday' => 'الثلاثاء',
-            'Wednesday' => 'الأربعاء',
-            'Thursday' => 'الخميس',
-            'Friday' => 'الجمعة',
-        ];
-
         $periodRange = CarbonPeriod::create($start, $end);
 
         $data = collect($periodRange)->map(function ($date) use ($results, $daysArabic) {
 
-            $dayKey = $date->format('Y-m-d');
-            $dayName = $daysArabic[$date->format('l')];
-
-            $row = $results->get($dayKey);
+            $key = $date->format('Y-m-d');
+            $row = $results->get($key);
 
             return [
-                'day' => $dayName,
+                'day' => $daysArabic[$date->format('l')],
                 'incoming' => $row->incoming ?? 0,
                 'resolved' => $row->resolved ?? 0,
             ];
         });
+    }
 
+    /*
+    |--------------------------------------------------------------------------
+    | 1 Month (Weeks)
+    |--------------------------------------------------------------------------
+    */
+
+    elseif ($period == '1month') {
+
+        $start = now()->subMonth()->startOfWeek();
+        $end = now()->endOfWeek();
+
+        $weeks = [];
+        $weekIndex = 1;
+
+        while ($start <= $end) {
+
+            $weekStart = $start->copy();
+            $weekEnd = $start->copy()->endOfWeek();
+
+            $weekData = $results->filter(function ($value, $key) use ($weekStart, $weekEnd) {
+
+                return Carbon::parse($key)->between($weekStart, $weekEnd);
+            });
+
+            $weeks[] = [
+                'day' => 'الأسبوع ' . $weekIndex,
+                'incoming' => $weekData->sum('incoming'),
+                'resolved' => $weekData->sum('resolved'),
+            ];
+
+            $start->addWeek();
+            $weekIndex++;
+        }
+
+        $data = collect($weeks);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Months (3 - 6 - 12)
+    |--------------------------------------------------------------------------
+    */
+
+    elseif (in_array($period, ['3months', '6months', '1year'])) {
+
+        $monthsBack = [
+            '3months' => 2,
+            '6months' => 5,
+            '1year' => 11
+        ];
+
+        $start = now()->subMonths($monthsBack[$period])->startOfMonth();
+
+        $data = collect();
+
+        for ($i = 0; $i <= $monthsBack[$period]; $i++) {
+
+            $monthStart = $start->copy()->addMonths($i)->startOfMonth();
+            $monthEnd = $start->copy()->addMonths($i)->endOfMonth();
+
+            $monthData = $results->filter(function ($value, $key) use ($monthStart, $monthEnd) {
+
+                return Carbon::parse($key)->between($monthStart, $monthEnd);
+            });
+
+            $data->push([
+                'day' => $monthsArabic[$monthStart->month],
+                'incoming' => $monthData->sum('incoming'),
+                'resolved' => $monthData->sum('resolved'),
+            ]);
+        }
     }
 
     return response()->json($data->values());
