@@ -32,7 +32,7 @@ use App\Models\ComplaintStatus;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use App\Models\Entity;
-
+use Carbon\CarbonPeriod;
 class AdminApiController extends Controller
 {
 
@@ -1008,75 +1008,64 @@ class AdminApiController extends Controller
         return response()->json($data);
     }
 
-   
 
-    public function performance(Request $request)
-    {
-        $period = $request->period ?? '7days';
+public function performance(Request $request)
+{
+    $period = $request->period ?? '7days';
 
-        $query = Complaint::query();
-        $this->filterByDate($query, $period);
+    $query = Complaint::query();
+    $this->filterByDate($query, $period);
 
-        $data = $query
-            ->selectRaw('DATE(created_at) as day,
-            COUNT(*) as incoming,
-            SUM(CASE WHEN complaint_status_id = 4 THEN 1 ELSE 0 END) as resolved')
-            ->groupBy('day')
-            ->orderBy('day','asc')
-            ->get()
-            ->map(function ($item, $index) use ($period) {
+    $results = $query
+        ->selectRaw('DATE(created_at) as day,
+        COUNT(*) as incoming,
+        SUM(CASE WHEN complaint_status_id = 4 THEN 1 ELSE 0 END) as resolved')
+        ->groupBy('day')
+        ->orderBy('day','asc')
+        ->get()
+        ->keyBy('day');
 
-                $day = $item->day;
+    /*
+    |--------------------------------------------------------------------------
+    | تحديد الفترة
+    |--------------------------------------------------------------------------
+    */
 
-                if ($period == '7days') {
+    if ($period == '7days') {
 
-                    $days = [
-                        'Saturday' => 'السبت',
-                        'Sunday' => 'الأحد',
-                        'Monday' => 'الإثنين',
-                        'Tuesday' => 'الثلاثاء',
-                        'Wednesday' => 'الأربعاء',
-                        'Thursday' => 'الخميس',
-                        'Friday' => 'الجمعة',
-                    ];
+        $start = now()->subDays(6);
+        $end = now();
 
-                    $dayName = Carbon::parse($day)->format('l');
-                    $day = $days[$dayName] ?? $dayName;
+        $daysArabic = [
+            'Saturday' => 'السبت',
+            'Sunday' => 'الأحد',
+            'Monday' => 'الإثنين',
+            'Tuesday' => 'الثلاثاء',
+            'Wednesday' => 'الأربعاء',
+            'Thursday' => 'الخميس',
+            'Friday' => 'الجمعة',
+        ];
 
-                } elseif ($period == '1month') {
+        $periodRange = CarbonPeriod::create($start, $end);
 
-                    $day = 'الأسبوع ' . ceil(($index + 1));
+        $data = collect($periodRange)->map(function ($date) use ($results, $daysArabic) {
 
-                } elseif ($period == '3months') {
+            $dayKey = $date->format('Y-m-d');
+            $dayName = $daysArabic[$date->format('l')];
 
-                    $months = [
-                        1 => 'يناير',
-                        2 => 'فبراير',
-                        3 => 'مارس',
-                        4 => 'أبريل',
-                        5 => 'مايو',
-                        6 => 'يونيو',
-                        7 => 'يوليو',
-                        8 => 'أغسطس',
-                        9 => 'سبتمبر',
-                        10 => 'أكتوبر',
-                        11 => 'نوفمبر',
-                        12 => 'ديسمبر',
-                    ];
+            $row = $results->get($dayKey);
 
-                    $monthNumber = Carbon::parse($item->day)->month;
-                    $day = $months[$monthNumber] ?? $monthNumber;
-                }
+            return [
+                'day' => $dayName,
+                'incoming' => $row->incoming ?? 0,
+                'resolved' => $row->resolved ?? 0,
+            ];
+        });
 
-                return [
-                    'day' => $day,
-                    'incoming' => (int) $item->incoming,
-                    'resolved' => (int) $item->resolved,
-                ];
-            });
-
-        return response()->json($data);
     }
+
+    return response()->json($data->values());
+}
 
     public function newcomplaints(Request $request)
     {
