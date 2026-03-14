@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ComplaintType extends Model
 {
     use HasFactory;
+    protected $guarded = [];
 
     protected $hidden = ['created_at','updated_at','name_ar','name_en'];
 

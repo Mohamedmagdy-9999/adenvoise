@@ -970,7 +970,6 @@ class AdminApiController extends Controller
 
             $join->on('complaint_types.id', '=', 'complaints.complaint_type_id');
 
-            // فلترة التاريخ
             if ($period == '7days') {
                 $join->where('complaints.created_at', '>=', now()->subDays(7));
             }
@@ -984,16 +983,22 @@ class AdminApiController extends Controller
             complaint_types.id,
             complaint_types.name_ar,
             complaint_types.name_en,
+            complaint_types.color,
             COUNT(complaints.id) as total
         ')
-        ->groupBy('complaint_types.id','complaint_types.name_ar','complaint_types.name_en')
+        ->groupBy(
+            'complaint_types.id',
+            'complaint_types.name_ar',
+            'complaint_types.name_en',
+            'complaint_types.color'
+        )
         ->get()
         ->map(function ($item) {
 
             return [
                 'name' => app()->getLocale() == 'ar'
-                            ? $item->name_ar
-                            : $item->name_en,
+                    ? $item->name_ar
+                    : $item->name_en,
                 'value' => (int) $item->total,
                 'color' => $item->color,
             ];
