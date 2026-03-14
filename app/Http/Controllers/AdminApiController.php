@@ -907,10 +907,9 @@ class AdminApiController extends Controller
             ->map(function ($item) {
 
                 $colors = [
-                    'جديد' => '#3B82F6',
-                    'قيد المعالجة' => '#F59E0B',
-                    'متأخرة' => '#EF4444',
-                    'تم حلها' => '#22C55E'
+                    'جديدة' => '#93BBFD',
+                    'قيد المعالجة' => '#FFDD46',
+                    'تم الحل' => '#81D4A9'
                 ];
 
                 return [
