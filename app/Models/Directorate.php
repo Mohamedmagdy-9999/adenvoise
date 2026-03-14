@@ -24,4 +24,9 @@ class Directorate extends Model
             : $this->name_en;
     }
 
+    public function neighborhood()
+    {
+        return $this->hasMany(Neighborhood::class, 'directorate_id');
+    }
+
 }

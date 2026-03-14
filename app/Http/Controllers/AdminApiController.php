@@ -1186,5 +1186,110 @@ class AdminApiController extends Controller
         ]);
     }
 
+
+    public function add_directorate(Request $request)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+               
+            ];
+            
+            $attributes = [
+                'name_en' => 'الاسم بالانجليزي',
+                'name_ar' => 'الاسم بالعربي',
+              
+            ];
+            
+            $request->validate([
+            
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+              
+            ], $messages, $attributes);
+
+            
+
+            $directorate = new Directorate();
+            $directorate->name_ar  = $request->name_ar;
+            $directorate->name_en  = $request->name_en;
+            $directorate->status = 'active';
+            $directorate->save();
+
+            return response()->json([
+                'message' => 'تم الاضافة',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function update_directorate(Request $request, $id)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+               
+            ];
+            
+            $attributes = [
+                'name_en' => 'الاسم بالانجليزي',
+                'name_ar' => 'الاسم بالعربي',
+              
+            ];
+            
+            $request->validate([
+            
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+              
+            ], $messages, $attributes);
+
+            
+           
+
+            $directorate = Directorate::findOrFail($id);
+            $directorate->name_ar  = $request->name_ar;
+            $directorate->name_en  = $request->name_en;
+            $directorate->save();
+
+            return response()->json([
+                'message' => 'تم التعديل',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function get_directorates()
+    {
+        $data = Directorate::withCount('neighborhood')
+            ->latest()
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'status' => $item->status,
+                    'count' => $item->neighborhood_count,
+                ];
+            });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
+
+    public function toggle_directorate_status($id)
+    {
+        $directorate = Directorate::findOrFail($id);
+
+        $directorate->status = $directorate->status == 'active' ? 'notactive' : 'active';
+
+        $directorate->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تغيير حالة المديرية',
+            'new_status' => $directorate->status
+        ]);
+    }
     
 }

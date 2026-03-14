@@ -107,6 +107,12 @@ Route::prefix('v-admin')->group(function () {
             Route::get('communityPressureAndTrendingComplaints', 'AdminApiController@communityPressureAndTrendingComplaints');
             Route::get('get_citizen_details/{id}', 'AdminApiController@get_citizen_details');
             Route::get('complaints_report', 'AdminApiController@complaints_report');
+
+
+            Route::get('get_directorates', 'AdminApiController@get_directorates');
+            Route::post('add_directorate', 'AdminApiController@add_directorate');
+            Route::post('update_directorate/{id}', 'AdminApiController@update_directorate');
+            Route::post('toggle_directorate_status/{id}', 'AdminApiController@toggle_directorate_status');
         });
 
 });
