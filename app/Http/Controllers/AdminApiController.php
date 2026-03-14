@@ -29,7 +29,8 @@ use App\Models\Blog;
 use Illuminate\Support\Facades\File;
 use App\Models\ComplaintMessage;
 use App\Models\ComplaintStatus;
-
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 class AdminApiController extends Controller
 {
 
@@ -1077,6 +1078,8 @@ class AdminApiController extends Controller
         ]);
     }
 
+   
+
     public function complaints_report(Request $request)
     {
         $query = Complaint::query();
@@ -1104,6 +1107,9 @@ class AdminApiController extends Controller
             if (!isset($report[$type][$directorate])) {
 
                 $report[$type][$directorate] = [
+                    'complaint_type' => $type,
+                    'directorate' => $directorate,
+
                     'processing_urgent' => 0,
                     'processing_normal' => 0,
                     'processing_total' => 0,
@@ -1143,9 +1149,30 @@ class AdminApiController extends Controller
             $report[$type][$directorate]['total']++;
         }
 
+        // تحويل النتائج إلى Collection
+        $flat = collect($report)->flatMap(function ($type) {
+            return collect($type)->values();
+        });
+
+        // pagination
+        $page = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+
+        $items = $flat->slice(($page - 1) * $perPage, $perPage)->values();
+
+        $paginated = new LengthAwarePaginator(
+            $items,
+            $flat->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url()]
+        );
+
         return response()->json([
             'status' => true,
-            'data' => $report
+            'data' => $paginated
         ]);
     }
+
+    
 }
