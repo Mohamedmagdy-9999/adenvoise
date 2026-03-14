@@ -995,7 +995,7 @@ class AdminApiController extends Controller
                             ? $item->name_ar
                             : $item->name_en,
                 'value' => (int) $item->total,
-                'color' => sprintf('#%06X', mt_rand(0, 0xFFFFFF))
+                'color' => $item->color,
             ];
         });
 
