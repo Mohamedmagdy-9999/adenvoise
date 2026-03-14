@@ -31,12 +31,24 @@ use App\Models\ComplaintMessage;
 use App\Models\ComplaintStatus;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use App\Models\Entity;
 class AdminApiController extends Controller
 {
 
     public function directorates()
     {
         $data = Directorate::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function entities()
+    {
+        $data = Entity::latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,
