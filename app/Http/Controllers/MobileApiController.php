@@ -118,7 +118,7 @@ class MobileApiController extends Controller
             'neighborhood_id' => 'الحي',
             'address' => 'العنوان',
             'lat' => 'احداثيات الشمال',
-            'lang' => 'احداثيات الغرب',
+            'lng' => 'احداثيات الغرب',
             'speel_level_id' => 'مستوي السرعة',
             'attachments' => 'المرفقات',
         ];
@@ -133,7 +133,7 @@ class MobileApiController extends Controller
                 'speel_level_id' => 'required|exists:speel_levels,id',
                 'address' => 'required',
                 'lat' => 'required',
-                'lang' => 'required',
+                'lng' => 'required',
                 'title' => 'required|string|max:255',
                 'desc' => 'required|string',
                 'attachments' => 'nullable|array',
@@ -161,7 +161,7 @@ class MobileApiController extends Controller
                 'speel_level_id' => $request->speel_level_id,
                 'address' => $request->address,
                 'lat' => $request->lat,
-                'lang' => $request->lang,
+                'lang' => $request->lng,
                 'complaint_status_id' => 1,
             ]);
 
