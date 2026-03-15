@@ -271,6 +271,7 @@ class MobileApiController extends Controller
                 'desc'=> $data->desc,
                 'image_url'=> $data->image_url,
                 'category_name'=> $data->category_name,
+                'created_at' => optional($item->created_at)->format('d-m-Y'),
 
 
             ];
@@ -279,6 +280,25 @@ class MobileApiController extends Controller
                 'status' => true,
                 'data' => $data,
               
+        ]);
+    }
+
+    public function blog_details($id)
+    {
+        $blog = Blog::findOrFail($id);
+
+        $data = [
+            'id' => $blog->id,
+            'title' => $blog->title,
+            'desc' => $blog->desc,
+            'image_url' => $blog->image_url,
+            'category_name' => $blog->category_name,
+            'created_at' => optional($item->created_at)->format('d-m-Y'),
+        ];
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
         ]);
     }
 
