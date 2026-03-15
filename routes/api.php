@@ -120,6 +120,10 @@ Route::prefix('v-admin')->group(function () {
             Route::post('add_neighborhood', 'AdminApiController@add_neighborhood');
             Route::post('update_neighborhood/{id}', 'AdminApiController@update_neighborhood');
             Route::post('toggle_neighborhood_status/{id}', 'AdminApiController@toggle_neighborhood_status');
+
+            Route::get('get_categories', 'AdminApiController@get_categories');
+            Route::post('add_category', 'AdminApiController@add_category');
+            Route::post('update_category/{id}', 'AdminApiController@update_category');
         });
 
 });

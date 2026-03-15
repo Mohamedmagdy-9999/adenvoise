@@ -33,6 +33,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use App\Models\Entity;
 use Carbon\CarbonPeriod;
+
 class AdminApiController extends Controller
 {
 
@@ -1569,6 +1570,96 @@ public function performance(Request $request)
             'status' => true,
             'message' => 'تم تغيير حالة المديرية',
             'new_status' => $neighborhood->status,
+        ]);
+    }
+
+
+    public function add_category(Request $request)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+               
+            ];
+            
+            $attributes = [
+                'name_en' => 'الاسم بالانجليزي',
+                'name_ar' => 'الاسم بالعربي',
+              
+            ];
+            
+            $request->validate([
+            
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+              
+            ], $messages, $attributes);
+
+            
+
+           $category = new Category();
+           $category->name_ar  = $request->name_ar;
+           $category->name_en  = $request->name_en;
+           $category->save();
+
+            return response()->json([
+                'message' => 'تم الاضافة',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function update_category(Request $request, $id)
+    {
+        $messages = [
+                'required' => 'حقل :attribute مطلوب.',
+               
+            ];
+            
+            $attributes = [
+                'name_en' => 'الاسم بالانجليزي',
+                'name_ar' => 'الاسم بالعربي',
+              
+            ];
+            
+            $request->validate([
+            
+                'name_en' => 'required|string|max:255',
+                'name_ar' => 'required|string|max:255',
+              
+            ], $messages, $attributes);
+
+            
+           
+
+            $category = Category::findOrFail($id);
+            $category->name_ar  = $request->name_ar;
+            $category->name_en  = $request->name_en;
+            $category->save();
+
+            return response()->json([
+                'message' => 'تم التعديل',
+                'status' => true,
+              
+            ], 200);
+    }
+
+    public function get_categories()
+    {
+        $data = Category::latest()
+            
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'name' => $item->name,
+                    'name_en' => $item->name_en,
+                    'name_ar' => $item->name_ar,
+                ];
+            });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
         ]);
     }
     
