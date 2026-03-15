@@ -568,9 +568,25 @@ class AdminApiController extends Controller
     }
 
 
-    public function citizens()
+    public function citizens(Request $request)
     {
-        $data = Citizen::withCount('complaints')->latest()->paginate(8);
+        $data = Citizen::withCount('complaints')
+
+            ->when($request->directorate_id, function ($q) use ($request) {
+                $q->where('directorate_id', $request->directorate_id);
+            })
+
+            ->when($request->neighborhood_id, function ($q) use ($request) {
+                $q->where('neighborhood_id', $request->neighborhood_id);
+            })
+
+            ->when($request->search, function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            })
+
+            ->latest()
+            ->paginate(8);
+
         $data->getCollection()->transform(function ($data) {
             return [
                 'id'  => $data->id,
@@ -583,13 +599,12 @@ class AdminApiController extends Controller
                 'neighborhood_name'=> $data->neighborhood_name,
                 'neighborhood_id'=> $data->neighborhood_id,
                 'complaint_count' => $data->complaints_count,
-
             ];
         });
+
         return response()->json([
-                'status' => true,
-                'data' => $data,
-              
+            'status' => true,
+            'data' => $data,
         ]);
     }
 
