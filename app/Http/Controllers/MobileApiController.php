@@ -293,7 +293,7 @@ class MobileApiController extends Controller
             'desc' => $blog->desc,
             'image_url' => $blog->image_url,
             'category_name' => $blog->category_name,
-            'created_at' => optional($item->created_at)->format('d-m-Y'),
+            'created_at' => optional($blog->created_at)->format('d-m-Y'),
         ];
 
         return response()->json([
