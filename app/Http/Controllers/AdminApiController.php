@@ -116,8 +116,8 @@ class AdminApiController extends Controller
     public function complaints(Request $request)
     {
         $data = Complaint::with('attachments')
-            ->when($request->neighborhood_id, fn ($q, $v) =>
-                $q->where('neighborhood_id', $v))
+            ->when($request->entity_id, fn ($q, $v) =>
+                $q->where('entity_id', $v))
 
             ->when($request->status_id, fn ($q, $v) =>
                 $q->where('complaint_status_id', $v))
