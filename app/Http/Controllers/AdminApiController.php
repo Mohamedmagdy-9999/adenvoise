@@ -126,7 +126,7 @@ class AdminApiController extends Controller
                 $q->where('directorate_id', $v))
 
             ->when($request->level_id, fn ($q, $v) =>
-                $q->where('level_id', $v))
+                $q->where('speel_level_id', $v))
 
             ->when($request->from, fn ($q, $v) =>
                 $q->whereDate('created_at', '>=', $v))
