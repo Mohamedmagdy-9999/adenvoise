@@ -531,7 +531,6 @@ class AdminApiController extends Controller
     public function blogs(Request $request)
     {
         $data = Blog::query()
-            
 
             ->when($request->category_id, fn ($q, $v) =>
                 $q->where('category_id', $v))
@@ -542,15 +541,20 @@ class AdminApiController extends Controller
             ->when($request->to, fn ($q, $v) =>
                 $q->whereDate('created_at', '<=', $v))
 
-           
-            
-            ->latest()
+            ->when($request->search, function ($q, $search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('title_ar', 'like', "%$search%")
+                        ->orWhere('title_en', 'like', "%$search%")
+                        ->orWhere('desc_ar', 'like', "%$search%")
+                        ->orWhere('desc_en', 'like', "%$search%");
+                });
+            })
 
+            ->latest()
             ->paginate(20);
 
-      
         $data->getCollection()->transform(function ($item) {
-             return [
+            return [
                 'id'  => $item->id,
                 'title_ar'=> $item->title_ar,
                 'title_en'=> $item->title_en,
@@ -560,13 +564,12 @@ class AdminApiController extends Controller
                 'category_name'=> $item->category_name,
                 'category_id'=> $item->category_id,
                 'created_at' => optional($item->created_at)->format('d-m-Y'),
-
             ];
         });
+
         return response()->json([
-                'status' => true,
-                'data' => $data,
-              
+            'status' => true,
+            'data' => $data,
         ]);
     }
 
