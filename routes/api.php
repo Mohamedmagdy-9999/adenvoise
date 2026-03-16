@@ -86,6 +86,7 @@ Route::prefix('v-admin')->group(function () {
             Route::post('update_blog/{id}', 'AdminApiController@update_blog');
             Route::delete('delete_blog/{id}', 'AdminApiController@delete_blog');
             Route::get('blogs', 'AdminApiController@blogs');
+            Route::get('single_blog', 'AdminApiController@single_blog');
 
             Route::get('citizens', 'AdminApiController@citizens');
             Route::get('citizen_complaints/{id}', 'AdminApiController@citizen_complaints');

@@ -420,7 +420,8 @@ class AdminApiController extends Controller
             $file->move(public_path('blog'), $name);
         }
 
-        
+        $admin = Auth::guard('api_admins')->user();
+
         $blog = new Blog();
         $blog->image = $name;
         $blog->category_id = $request->category_id;
@@ -428,6 +429,7 @@ class AdminApiController extends Controller
         $blog->title_en = $request->title_en;
         $blog->desc_ar = $request->desc_ar;
         $blog->desc_en = $request->desc_en;
+        $blog->admin_name = $admin->name;
         $blog->save();
 
         return response()->json([
@@ -565,6 +567,31 @@ class AdminApiController extends Controller
                 'status' => true,
                 'data' => $data,
               
+        ]);
+    }
+
+    public function single_blog(Request $request, $id)
+    {
+        $item = Blog::findOrFail($id);
+
+        $data = [
+            'id'  => $item->id,
+            'title'  => $item->title,
+            'title_ar'=> $item->title_ar,
+            'title_en'=> $item->title_en,
+            'desc_ar'=> $item->desc_ar,
+            'desc_en'=> $item->desc_en,
+            'desc'=> $item->desc,
+            'image_url'=> $item->image_url,
+            'category_name'=> $item->category_name,
+            'category_id'=> $item->category_id,
+            'user_name'=> $item->admin_name,
+            'created_at' => optional($item->created_at)->format('d-m-Y'),
+        ];
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
         ]);
     }
 
