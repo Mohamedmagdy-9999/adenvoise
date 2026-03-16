@@ -59,6 +59,7 @@ Route::prefix('v-admin')->group(function () {
         Route::middleware(['auth:api_admins', 'admin'])->group(function () {
             Route::get('check_admin', 'AuthApiController@admin_check');
             Route::post('update_admin_profile', 'AuthApiController@update_admin_profile');
+            Route::post('admin_change_password', 'AuthApiController@admin_change_password');
             Route::get('complaints', 'AdminApiController@complaints');
             Route::get('complaint_details/{id}', 'AdminApiController@complaint_details');
             Route::post('update_complaint_status/{id}', 'AdminApiController@update_complaint_status');
@@ -137,6 +138,7 @@ Route::prefix('v-user')->group(function () {
         Route::middleware(['auth:api_users', 'user'])->group(function () {
             Route::get('check_user', 'AuthApiController@user_check');
             Route::post('update_user_profile', 'AuthApiController@update_user_profile');
+            Route::post('user_change_password', 'AuthApiController@user_change_password');
             Route::get('complaints', 'UserApiController@complaints');
             Route::get('complaint_details/{id}', 'UserApiController@complaint_details');
             Route::post('update_complaint_status/{id}', 'UserApiController@update_complaint_status');

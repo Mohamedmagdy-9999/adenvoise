@@ -339,6 +339,48 @@ class AuthApiController extends Controller
         ]);
     }
 
+    public function admin_change_password(Request $request)
+    {
+        $user = Auth::guard('api_admins')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المستخدم غير موجود أو التوكن غير صالح'
+            ], 401);
+        }
+
+        $messages = [
+            'current_password.required' => 'يجب إدخال كلمة المرور الحالية',
+            'new_password.required' => 'يجب إدخال كلمة المرور الجديدة',
+            'new_password.min' => 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل',
+            'new_password.confirmed' => 'تأكيد كلمة المرور غير متطابق',
+        ];
+
+        $data = $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ], $messages);
+
+        // التحقق من كلمة المرور الحالية
+        if (!Hash::check($data['current_password'], $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'كلمة المرور الحالية غير صحيحة'
+            ], 422);
+        }
+
+        // تحديث كلمة المرور
+        $user->update([
+            'password' => Hash::make($data['new_password'])
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تغيير كلمة المرور بنجاح'
+        ]);
+    }
+
     public function admin_check(Request $request)
     {
         try {
@@ -463,6 +505,48 @@ class AuthApiController extends Controller
             'status' => true,
             'message' => 'تم تحديث البيانات بنجاح',
             'user' => $user
+        ]);
+    }
+
+    public function user_change_password(Request $request)
+    {
+        $user = Auth::guard('api_users')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المستخدم غير موجود أو التوكن غير صالح'
+            ], 401);
+        }
+
+        $messages = [
+            'current_password.required' => 'يجب إدخال كلمة المرور الحالية',
+            'new_password.required' => 'يجب إدخال كلمة المرور الجديدة',
+            'new_password.min' => 'كلمة المرور الجديدة يجب أن تكون 8 أحرف على الأقل',
+            'new_password.confirmed' => 'تأكيد كلمة المرور غير متطابق',
+        ];
+
+        $data = $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|string|min:8|confirmed',
+        ], $messages);
+
+        // التحقق من كلمة المرور الحالية
+        if (!Hash::check($data['current_password'], $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'كلمة المرور الحالية غير صحيحة'
+            ], 422);
+        }
+
+        // تحديث كلمة المرور
+        $user->update([
+            'password' => Hash::make($data['new_password'])
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تغيير كلمة المرور بنجاح'
         ]);
     }
 
