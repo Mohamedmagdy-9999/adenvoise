@@ -28,6 +28,7 @@ use App\Models\Slider;
 use App\Models\Blog;
 use App\Models\ComplaintMessage;
 use App\Models\ComplaintRate;
+use App\Models\Entity;
 class MobileApiController extends Controller
 {
 
@@ -67,6 +68,17 @@ class MobileApiController extends Controller
     public function levels()
     {
         $data = SpeelLevel::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function entities()
+    {
+        $data = Entity::latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,
