@@ -195,7 +195,8 @@ class MobileApiController extends Controller
 
                     $filename = time() . '_' . $file->getClientOriginalName();
 
-                    $path = $file->store('complaints', 'public');
+                    
+                     $file->move('complaints', $filename);
 
                     $type = str_starts_with($file->getMimeType(), 'video/') ? 'video' : 'image';
 
