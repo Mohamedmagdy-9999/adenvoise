@@ -20,6 +20,6 @@ class ComplaintAttachment extends Model
 
     public function getFileUrlAttribute()
     {
-       return asset('storage/' . $this->file);
+       return asset('storage/app/public/' . $this->file);
     }
 }
