@@ -174,7 +174,7 @@ class MobileApiController extends Controller
                 'speel_level_id' => $request->speel_level_id,
                 'address' => $request->address,
                 'lat' => $request->lat,
-                'lng' => $request->lng, // ✔️ تصحيح هنا
+                'lang' => $request->lng, // ✔️ تصحيح هنا
                 'complaint_status_id' => 1,
             ]);
 
