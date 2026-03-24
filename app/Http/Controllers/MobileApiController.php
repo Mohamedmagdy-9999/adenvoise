@@ -297,7 +297,28 @@ class MobileApiController extends Controller
 
     public function blogs()
     {
-        $data = Blog::latest()->paginate(8);
+         $data = Blog::query()
+
+            ->when($request->category_id, fn ($q, $v) =>
+                $q->where('category_id', $v))
+
+            ->when($request->from, fn ($q, $v) =>
+                $q->whereDate('created_at', '>=', $v))
+
+            ->when($request->to, fn ($q, $v) =>
+                $q->whereDate('created_at', '<=', $v))
+
+            ->when($request->search, function ($q, $search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('title_ar', 'like', "%$search%")
+                        ->orWhere('title_en', 'like', "%$search%")
+                        ->orWhere('desc_ar', 'like', "%$search%")
+                        ->orWhere('desc_en', 'like', "%$search%");
+                });
+            })
+
+            ->latest()
+            ->paginate(20);
         $data->getCollection()->transform(function ($data) {
              return [
                 'id'  => $data->id,
