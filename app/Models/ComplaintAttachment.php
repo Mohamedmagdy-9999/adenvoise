@@ -15,11 +15,10 @@ class ComplaintAttachment extends Model
     'type',
 ];
 
-
     protected $appends = ['file_url'];
 
     public function getFileUrlAttribute()
     {
-       return asset('storage/app/public/' . $this->file);
+       return asset('storage/' . $this->file);
     }
 }
