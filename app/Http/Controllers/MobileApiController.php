@@ -29,6 +29,7 @@ use App\Models\Blog;
 use App\Models\ComplaintMessage;
 use App\Models\ComplaintRate;
 use App\Models\Entity;
+use App\Models\ComplaintAttachment;
 class MobileApiController extends Controller
 {
 
