@@ -224,7 +224,21 @@ class MobileApiController extends Controller
 
     public function my_complaints()
     {
-        $data = Complaint::with('attachments')->where('citizen_id',auth('api_citizens')->id())->latest()->paginate(8);
+        $data = Complaint::with('attachments')->where('citizen_id',auth('api_citizens')->id())
+        ->when($request->entity_id, fn ($q, $v) =>
+                $q->where('entity_id', $v))
+
+            ->when($request->status_id, fn ($q, $v) =>
+                $q->where('complaint_status_id', $v))
+
+            
+            ->when($request->complaint_type_id, fn ($q, $v) =>
+                $q->where('complaint_type_id', $v))
+
+            
+            ->latest()
+
+            ->paginate(8);
         $data->getCollection()->transform(function ($data) {
              return [
                 'id'  => $data->id,
