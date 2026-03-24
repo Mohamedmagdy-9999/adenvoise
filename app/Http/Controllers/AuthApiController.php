@@ -284,6 +284,26 @@ class AuthApiController extends Controller
             'message' => 'تم تغيير كلمة المرور بنجاح'
         ]);
     }
+
+    public function delete_citizen(Request $request)
+    {
+        $user = Auth::guard('api_citizens')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المستخدم غير موجود أو التوكن غير صالح'
+            ], 401);
+        }
+
+        // Soft delete مباشرة
+        $user->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الحذف بنجاح (Soft Delete)',
+        ]);
+    }
     
 
 

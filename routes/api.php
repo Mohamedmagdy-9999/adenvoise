@@ -25,6 +25,8 @@ Route::prefix('v-mobile')->group(function () {
 
         Route::post('update_profile', 'AuthApiController@update_profile');
         Route::get('check', 'AuthApiController@check');
+        Route::post('citizen_change_password', 'AuthApiController@citizen_change_password');
+        Route::post('delete_citizen', 'AuthApiController@delete_citizen');
 
 
             Route::get('directorates','MobileApiController@directorates');

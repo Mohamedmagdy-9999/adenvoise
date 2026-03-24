@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Citizen extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+   
+    use HasFactory, Notifiable,SoftDeletes;
 
     protected $guarded = [];
     protected $appends = ['image_url','directorate_name','neighborhood_name'];
@@ -18,6 +19,7 @@ class Citizen extends Authenticatable implements JWTSubject
         'remember_token',
         'test',
     ];
+    protected $dates = ['deleted_at'];
 
     // ✅ مطلوب من JWT
     public function getJWTIdentifier()
