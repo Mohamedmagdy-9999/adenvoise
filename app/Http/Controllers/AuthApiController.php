@@ -301,7 +301,7 @@ class AuthApiController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'تم الحذف بنجاح (Soft Delete)',
+            'message' => 'تم الحذف بنجاح',
         ]);
     }
     
