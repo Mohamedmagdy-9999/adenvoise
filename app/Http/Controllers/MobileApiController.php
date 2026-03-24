@@ -160,6 +160,9 @@ class MobileApiController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
+            do{
+            $code = strtoupper(Str::random(8)); // 8 حروف وأرقام كبيرة
+            } while (Complaint::where('code', $code)->exists());
 
             // ✅ إنشاء الشكوى
             $complaint = Complaint::create([
@@ -176,6 +179,7 @@ class MobileApiController extends Controller
                 'lat' => $request->lat,
                 'lang' => $request->lng, // ✔️ تصحيح هنا
                 'complaint_status_id' => 1,
+                'code' =>$code,
             ]);
 
             // ✅ رفع المرفقات
@@ -253,6 +257,8 @@ class MobileApiController extends Controller
                 'id'  => $data->id,
                 'complaint_type_name'=> $data->complaint_type_name,
                 'complaint_type_id'=> $data->complaint_type_id,
+                'entity_name'=> $data->entity_name,
+                'entity_id'=> $data->entity_id,
                 'type_name'=> $data->type_name,
                 'type_id'=> $data->type_id,
                 'level_name'=> $data->level_name,
@@ -268,6 +274,13 @@ class MobileApiController extends Controller
                'desc'=> $data->desc,
                'status_name'=> $data->status_name,
                'status_id'=> $data->complaint_status_id,
+               'code' => $data->code,
+               'tags' => $data->getCollection()->transform(function ($tag){
+                    return[
+                        'complaint_type' => $tag->complaint_type_name,
+                        'entity_name' => $tag->entity_name,
+                    ];
+               }),
                'attachments'        => $data->attachments->map(function($attachment){
                                         return [
                                             'id' => $attachment->id,
@@ -275,6 +288,7 @@ class MobileApiController extends Controller
                                             'type' => $attachment->type,
                                         ];
                                     }),
+                
            
 
             ];
@@ -282,6 +296,7 @@ class MobileApiController extends Controller
         return response()->json([
                 'status' => true,
                 'data' => $data,
+                
               
         ]);
     }
