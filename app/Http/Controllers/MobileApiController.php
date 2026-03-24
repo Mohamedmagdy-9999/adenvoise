@@ -295,7 +295,7 @@ class MobileApiController extends Controller
     }
 
 
-    public function blogs()
+    public function blogs(Request $request)
     {
          $data = Blog::query()
 
