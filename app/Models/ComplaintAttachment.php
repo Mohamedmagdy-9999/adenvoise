@@ -15,6 +15,7 @@ class ComplaintAttachment extends Model
     'type',
 ];
 
+
     protected $appends = ['file_url'];
 
     public function getFileUrlAttribute()
