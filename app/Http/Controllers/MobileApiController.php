@@ -248,6 +248,14 @@ class MobileApiController extends Controller
             ->when($request->complaint_type_id, fn ($q, $v) =>
                 $q->where('complaint_type_id', $v))
 
+                ->when($request->search, function ($q, $v) {
+                $q->where(function ($qq) use ($v) {
+                    $qq->where('title', 'like', "%$v%")
+                    ->orWhere('desc', 'like', "%$v%")
+                     ->orWhere('code', 'like', "%$v%");
+                    
+                });
+            })
             
             ->latest()
 
