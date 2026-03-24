@@ -161,7 +161,7 @@ class MobileApiController extends Controller
                 ], 422);
             }
 
-            // إنشاء الشكوى
+            // ✅ إنشاء الشكوى
             $complaint = Complaint::create([
                 'citizen_id' => auth('api_citizens')->id(),
                 'title' => $request->title,
@@ -174,15 +174,15 @@ class MobileApiController extends Controller
                 'speel_level_id' => $request->speel_level_id,
                 'address' => $request->address,
                 'lat' => $request->lat,
-                'lang' => $request->lng,
+                'lng' => $request->lng, // ✔️ تصحيح هنا
                 'complaint_status_id' => 1,
             ]);
 
-           if ($request->hasFile('attachments')) {
+            // ✅ رفع المرفقات
+            if ($request->hasFile('attachments')) {
 
                 $files = $request->file('attachments');
 
-                // لو ملف واحد → نحوله Array
                 if (!is_array($files)) {
                     $files = [$files];
                 }
@@ -193,16 +193,24 @@ class MobileApiController extends Controller
                         continue;
                     }
 
-                    $filename = time() . '_' . $file->getClientOriginalName();
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
 
-                    $file->move(public_path('storage/complaints'), $filename);
-                    
+                    // ✅ تخزين في storage
+                    $path = $file->storeAs('complaints', $filename, 'public');
+
+                    // ✅ نسخه لـ public علشان يظهر
+                    \File::ensureDirectoryExists(public_path('storage/complaints'));
+
+                    \File::copy(
+                        storage_path('app/public/' . $path),
+                        public_path('storage/' . $path)
+                    );
 
                     $type = str_starts_with($file->getMimeType(), 'video/') ? 'video' : 'image';
 
                     ComplaintAttachment::create([
                         'complaint_id' => $complaint->id,
-                         'file' => 'complaints/' . $filename,
+                        'file' => $path, // complaints/xxx.jpg
                         'type' => $type,
                     ]);
                 }
