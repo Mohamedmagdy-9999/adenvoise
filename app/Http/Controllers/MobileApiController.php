@@ -179,7 +179,14 @@ class MobileApiController extends Controller
 
            if ($request->hasFile('attachments')) {
 
-                foreach ($request->file('attachments') as $file) {
+                $files = $request->file('attachments');
+
+                // لو ملف واحد → نحوله Array
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
+
+                foreach ($files as $file) {
 
                     if (!$file || !$file->isValid()) {
                         continue;
@@ -283,7 +290,7 @@ class MobileApiController extends Controller
                 'desc'=> $data->desc,
                 'image_url'=> $data->image_url,
                 'category_name'=> $data->category_name,
-                'created_at' => optional($item->created_at)->format('d-m-Y'),
+                'created_at' => optional($data->created_at)->format('d-m-Y'),
 
 
             ];
