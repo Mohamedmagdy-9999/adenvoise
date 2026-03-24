@@ -275,12 +275,12 @@ class MobileApiController extends Controller
                'status_name'=> $data->status_name,
                'status_id'=> $data->complaint_status_id,
                'code' => $data->code,
-               'tags' => $data->getCollection()->transform(function ($tag){
-                    return[
-                        'complaint_type' => $tag->complaint_type_name,
-                        'entity_name' => $tag->entity_name,
-                    ];
-               }),
+               'tags' => [
+                        [
+                            'complaint_type' => $data->complaint_type_name,
+                            'entity_name' => $data->entity_name,
+                        ]
+                    ],
                'attachments'        => $data->attachments->map(function($attachment){
                                         return [
                                             'id' => $attachment->id,
