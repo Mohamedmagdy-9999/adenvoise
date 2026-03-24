@@ -195,14 +195,14 @@ class MobileApiController extends Controller
 
                     $filename = time() . '_' . $file->getClientOriginalName();
 
+                    $path = $file->store('complaints', 'public');
                     
-                     $file->move('complaints', $filename);
 
                     $type = str_starts_with($file->getMimeType(), 'video/') ? 'video' : 'image';
 
                     ComplaintAttachment::create([
                         'complaint_id' => $complaint->id,
-                        'file' => $filename,
+                        'file' => $path,
                         'type' => $type,
                     ]);
                 }
