@@ -222,7 +222,7 @@ class MobileApiController extends Controller
     }
 
 
-    public function my_complaints()
+    public function my_complaints(Request $request)
     {
         $data = Complaint::with('attachments')->where('citizen_id',auth('api_citizens')->id())
         ->when($request->entity_id, fn ($q, $v) =>
