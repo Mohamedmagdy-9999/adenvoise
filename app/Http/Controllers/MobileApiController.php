@@ -148,7 +148,7 @@ class MobileApiController extends Controller
                 'lng' => 'required',
                 'title' => 'required|string|max:255',
                 'desc' => 'required|string',
-                'attachments' => 'nullable|array',
+                'attachments' => 'nullable',
                 'attachments.*' => 'file|mimes:jpg,jpeg,png,mp4,mov,avi|max:20480',
             ], $messages, $attributes);
 
@@ -194,7 +194,7 @@ class MobileApiController extends Controller
 
                     $filename = time() . '_' . $file->getClientOriginalName();
 
-                    $file->move(public_path('complaints'), $filename);
+                    $path = $file->store('complaints', 'public');
 
                     $type = str_starts_with($file->getMimeType(), 'video/') ? 'video' : 'image';
 
