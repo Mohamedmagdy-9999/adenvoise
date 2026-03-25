@@ -139,11 +139,11 @@ class MobileApiController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'type_id' => 'required|exists:types,id',
-                'complaint_type_id' => 'required|exists:complaint_types,id',
-                'entity_id' => 'required|exists:entities,id',
+                'complaint_type_id' => 'required_unless:type_id,2|nullable|exists:complaint_types,id',
+                'entity_id' => 'required_unless:type_id,2|nullable|exists:entities,id',
+                'speel_level_id' => 'required_unless:type_id,2|nullable|exists:speel_levels,id',
                 'directorate_id' => 'required|exists:directorates,id',
                 'neighborhood_id' => 'required|exists:neighborhoods,id',
-                'speel_level_id' => 'required|exists:speel_levels,id',
                 'address' => 'required',
                 'lat' => 'required',
                 'lng' => 'required',
