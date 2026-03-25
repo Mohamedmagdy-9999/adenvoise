@@ -59,7 +59,7 @@ class AuthApiController extends Controller
             'email' => 'required|email|unique:citizens,email',
             'directorate_id' => 'required|exists:directorates,id',
             'neighborhood_id' => 'required|exists:neighborhoods,id',
-            'image' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+            'image' => 'required|image|mimes:png,jpg,jpeg,webp|max:10240',
             'password' => 'required|string|min:8',
         ], $messages);
 
