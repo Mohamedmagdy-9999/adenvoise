@@ -86,8 +86,8 @@ class MobileApiController extends Controller
         $data->transform(function ($data) {
              return [
            
-                'entity_name'=> $data->entity_name,
-                'entity_id'=> $data->entity_id,
+                'name'=> $data->entity_name,
+                'id'=> $data->entity_id,
              ];
                
               
