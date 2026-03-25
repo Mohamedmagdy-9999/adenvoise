@@ -83,7 +83,7 @@ class MobileApiController extends Controller
     public function entities($id)
     {
         $data = ComplaintParties::where('complaint_type_id',$id)->latest()->get();
-        $data->getCollection()->transform(function ($data) {
+        $data->transform(function ($data) {
              return [
            
                 'entity_name'=> $data->entity_name,
