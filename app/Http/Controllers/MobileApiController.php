@@ -30,6 +30,7 @@ use App\Models\ComplaintMessage;
 use App\Models\ComplaintRate;
 use App\Models\Entity;
 use App\Models\ComplaintAttachment;
+use App\Models\ComplaintParties;
 class MobileApiController extends Controller
 {
 
@@ -54,6 +55,8 @@ class MobileApiController extends Controller
         ]);
     }
 
+   
+
     public function types()
     {
         $data = Type::latest()->get();
@@ -77,9 +80,18 @@ class MobileApiController extends Controller
 
     }
 
-    public function entities()
+    public function entities($id)
     {
-        $data = Entity::latest()->get();
+        $data = ComplaintParties::where('complaint_type_id',$id)->latest()->get();
+        $data->getCollection()->transform(function ($data) {
+             return [
+           
+                'entity_name'=> $data->entity_name,
+                'entity_id'=> $data->entity_id,
+             ];
+               
+              
+        });
         return response()->json([
                 'status' => true,
                 'data' => $data,
