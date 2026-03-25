@@ -140,6 +140,7 @@ class AdminApiController extends Controller
                 $q->where(function ($qq) use ($v) {
                     $qq->where('title', 'like', "%$v%")
                     ->orWhere('desc', 'like', "%$v%")
+                    ->orWhere('code', 'like', "%$v%")
                     ->orWhereHas('citizen', function ($q) use ($v) {
                             $q->where('name', 'like', "%$v%");
                     });
@@ -155,6 +156,7 @@ class AdminApiController extends Controller
         $data->getCollection()->transform(function ($item) {
             return [
                 'id' => $item->id,
+                'code' => $item->code,
                 'complaint_type_name' => $item->complaint_type_name,
                 // 'type_name' => $item->type_name,
                 'level_name' => $item->level_name,
@@ -204,6 +206,7 @@ class AdminApiController extends Controller
         $complaintsCount = Complaint::where('citizen_id',$item->citizen_id)->count();
         $data = [
             'id' => $item->id,
+            'code' => $item->code,
             'complaint_type_name' => $item->complaint_type_name,
             'type_name' => $item->type_name,
             'level_name' => $item->level_name,
