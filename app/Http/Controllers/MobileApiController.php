@@ -35,7 +35,7 @@ class MobileApiController extends Controller
 
     public function directorates()
     {
-        $data = Directorate::where('status', 'active')->latest()->get();
+        $data = Directorate::whereHas('neighborhood')->where('status', 'active')->latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,

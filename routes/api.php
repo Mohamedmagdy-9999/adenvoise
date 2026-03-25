@@ -19,8 +19,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 Route::prefix('v-mobile')->group(function () {
     
-    Route::post('register', 'AuthApiController@add_new_citizen');
-    Route::post('login', 'AuthApiController@login');
+        Route::post('register', 'AuthApiController@add_new_citizen');
+        Route::post('login', 'AuthApiController@login');
+
+        Route::get('directorates','MobileApiController@directorates');
+        Route::get('neighborhoods/{id}','MobileApiController@neighborhood');
+
         Route::middleware(['auth:api_citizens', 'citizen'])->group(function () {
 
         Route::post('update_profile', 'AuthApiController@update_profile');
@@ -29,8 +33,7 @@ Route::prefix('v-mobile')->group(function () {
         Route::post('delete_citizen', 'AuthApiController@delete_citizen');
 
 
-            Route::get('directorates','MobileApiController@directorates');
-            Route::get('neighborhoods/{id}','MobileApiController@neighborhood');
+            
             Route::get('types','MobileApiController@types');
             Route::get('levels','MobileApiController@levels');
             Route::get('entities','MobileApiController@entities');

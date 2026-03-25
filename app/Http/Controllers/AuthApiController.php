@@ -29,6 +29,7 @@ class AuthApiController extends Controller
 
             'phone.required' => 'رقم الهاتف مطلوب',
             'phone.numeric' => 'رقم الهاتف يجب أن يكون أرقام فقط',
+            'phone.unique' => 'رقم الهاتف مستخدم من قبل',
 
             'name.required' => 'الاسم مطلوب',
             'name.max' => 'الاسم طويل جدًا',
@@ -53,7 +54,7 @@ class AuthApiController extends Controller
 
         $data = $request->validate([
             'identity_number' => 'required|unique:citizens,identity_number',
-            'phone' => 'required|numeric',
+            'phone' => 'required|numeric|unique:citizens,phone',
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:citizens,email',
             'directorate_id' => 'required|exists:directorates,id',
