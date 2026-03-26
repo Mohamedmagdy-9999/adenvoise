@@ -295,6 +295,9 @@ class MobileApiController extends Controller
                'status_name'=> $data->status_name,
                'status_id'=> $data->complaint_status_id,
                'code' => $data->code,
+                'rating' => round($data->ratings_avg_rate,1),
+                'created_at' => optional($data->created_at)->format('d-m-Y'),
+                'updated_at' => optional($data->updated_at)->format('d-m-Y'),
                'tags' => [
                         [
                             'complaint_type' => $data->complaint_type_name,
@@ -318,6 +321,59 @@ class MobileApiController extends Controller
                 'data' => $data,
                 
               
+        ]);
+    }
+
+    public function complaint_details($id)
+    {
+        $data = Complaint::with('attachments')->findOrFail($id);
+
+        $result = [
+            'id'  => $data->id,
+            'complaint_type_name'=> $data->complaint_type_name,
+            'complaint_type_id'=> $data->complaint_type_id,
+            'entity_name'=> $data->entity_name,
+            'entity_id'=> $data->entity_id,
+            'type_name'=> $data->type_name,
+            'type_id'=> $data->type_id,
+            'level_name'=> $data->level_name,
+            'level_id'=> $data->speel_level_id,
+            'directorate_name'=> $data->directorate_name,
+            'directorate_id'=> $data->directorate_id,
+            'neighborhood_name'=> $data->neighborhood_name,
+            'neighborhood_id'=> $data->neighborhood_id,
+            'lat'=> $data->lat,
+            'lang'=> $data->lang,
+            'address'=> $data->address,
+            'title'=> $data->title,
+            'desc'=> $data->desc,
+            'status_name'=> $data->status_name,
+            'status_id'=> $data->complaint_status_id,
+            'code' => $data->code,
+            'rating' => round($data->ratings_avg_rate,1),
+
+            'created_at' => optional($data->created_at)->format('d-m-Y'),
+            'updated_at' => optional($data->updated_at)->format('d-m-Y'),
+
+            'tags' => [
+                [
+                    'complaint_type' => $data->complaint_type_name,
+                    'entity_name' => $data->entity_name,
+                ]
+            ],
+
+            'attachments' => $data->attachments->map(function($attachment){
+                return [
+                    'id' => $attachment->id,
+                    'file_url' => $attachment->file_url,
+                    'type' => $attachment->type,
+                ];
+            }),
+        ];
+
+        return response()->json([
+            'status' => true,
+            'data' => $result,
         ]);
     }
 
