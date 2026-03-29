@@ -249,7 +249,7 @@ class MobileApiController extends Controller
 
     public function my_complaints(Request $request)
     {
-        $data = Complaint::with('attachments')->where('citizen_id',auth('api_citizens')->id())
+        $data = Complaint::with('attachments')->withAvg('ratings','rate')->where('citizen_id',auth('api_citizens')->id())
         ->when($request->entity_id, fn ($q, $v) =>
                 $q->where('entity_id', $v))
 
@@ -326,7 +326,7 @@ class MobileApiController extends Controller
 
     public function complaint_details($id)
     {
-        $data = Complaint::with('attachments')->findOrFail($id);
+        $data = Complaint::with('attachments')->withAvg('ratings','rate')->findOrFail($id);
 
         $result = [
             'id'  => $data->id,
