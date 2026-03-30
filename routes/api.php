@@ -38,6 +38,7 @@ Route::prefix('v-mobile')->group(function () {
             Route::get('levels','MobileApiController@levels');
             Route::get('entities/{id}','MobileApiController@entities');
             Route::get('categories','MobileApiController@categories');
+            Route::get('complaint_status','MobileApiController@complaint_status');
             Route::get('complaint_types','MobileApiController@complaint_types');
             Route::post('add_complaint', 'MobileApiController@add_complaint');
             Route::get('my_complaints', 'MobileApiController@my_complaints');

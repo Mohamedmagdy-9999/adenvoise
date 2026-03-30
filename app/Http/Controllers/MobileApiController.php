@@ -31,6 +31,7 @@ use App\Models\ComplaintRate;
 use App\Models\Entity;
 use App\Models\ComplaintAttachment;
 use App\Models\ComplaintParties;
+use App\Models\ComplaintStatus;
 class MobileApiController extends Controller
 {
 
@@ -92,6 +93,17 @@ class MobileApiController extends Controller
                
               
         });
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function complaint_status()
+    {
+        $data = ComplaintStatus::latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,
@@ -397,7 +409,7 @@ class MobileApiController extends Controller
 
     public function blogs(Request $request)
     {
-         $data = Blog::query()
+        $data = Blog::query()
 
             ->when($request->category_id, fn ($q, $v) =>
                 $q->where('category_id', $v))
@@ -417,10 +429,21 @@ class MobileApiController extends Controller
                 });
             })
 
-            ->latest()
+            // ✅ فلتر الترتيب
+            ->when($request->order, function ($q, $order) {
+                if ($order == 'oldest') {
+                    $q->orderBy('created_at', 'asc');
+                } else {
+                    $q->orderBy('created_at', 'desc'); // default latest
+                }
+            }, function ($q) {
+                $q->latest(); // default لو مفيش order
+            })
+
             ->paginate(20);
+
         $data->getCollection()->transform(function ($data) {
-             return [
+            return [
                 'id'  => $data->id,
                 'title'=> $data->title,
                 'desc'=> $data->desc,
@@ -428,14 +451,12 @@ class MobileApiController extends Controller
                 'category_name'=> $data->category_name,
                 'category_id'=> $data->category_id,
                 'created_at' => optional($data->created_at)->format('d-m-Y'),
-
-
             ];
         });
+
         return response()->json([
-                'status' => true,
-                'data' => $data,
-              
+            'status' => true,
+            'data' => $data,
         ]);
     }
 
